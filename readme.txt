@@ -19,3 +19,7 @@ and if you have errors about not finding Block, go to Trees.java and fix imports
 
 then you should be able to call Trees.generateTree(coords, height, world, Trees.Shape.round); for example
 another example: Trees.generateTree((int)this.thePlayer.posX, (int)this.thePlayer.posY, (int)this.thePlayer.posZ, 10, theWorld, Trees.Shape.normal);
+
+KNOWN ISSUES:
+any subclasses of procedural tree will fail to work properly and will spawn leaves at 0,0,0
+(because broken array position stuff?)
