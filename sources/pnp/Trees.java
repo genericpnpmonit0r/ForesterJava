@@ -16,7 +16,7 @@ public class Trees {
 //	public static final int RADIUS = 80;
 	public static Shape SHAPE = Shape.procedural;
 	public static  int CENTERHEIGHT = 55;
-	public static  int EDGEHEIGHT = 25;
+	public static  int EDGEHEIGHT = 9;
 	public static  int HEIGHTVARIATION = 12;
 	public static  boolean WOOD = true;
 	public static  double TRUNKTHICKNESS = 1.0D;
@@ -100,18 +100,19 @@ public class Trees {
 		t.pos[1] = y;
 		t.pos[2] = z;
 		t.prepare();
-		t.makefoliage();
 		t.maketrunk();
+		t.makefoliage();
 	}
 	
 	public static void assign_value(int x, int y, int z, int id, int meta, WorldAccessor mcmap) {
 		System.out.printf("assign_value: x:%d y:%d z:%d id:%d\n", x,y,z,id);
+		//Thread.dumpStack();
 		mcmap.setBlockAndMetadataWithNotify(x, y, z, id, meta);
 	}
 	
 	static boolean is_in_array(int[] array, int value) {
 		for(int v : array) {
-			return v == value;
+			if(v == value) return true;
 		}
 		return false;
 	}
@@ -520,7 +521,7 @@ public class Trees {
 		
 		@Override
 		void prepare() {
-			int[] treeposition = this.pos;
+			System.out.println("prepare");
 			this.trunkradius = .618 * Math.sqrt(this.height * TRUNKTHICKNESS);
 			int yend;
 			if(this.trunkradius < 1) {
@@ -528,16 +529,16 @@ public class Trees {
 			}
 			if(BROKENTRUNK) {
 				this.trunkheight = this.height * (.3 + Math.random() * .4);
-				yend = (int)(treeposition[1] + this.trunkheight + .5);
+				yend = (int)(pos[1] + this.trunkheight + .5);
 			} else {
 				this.trunkheight = this.height;
-				yend = (int)(treeposition[1] + this.trunkheight);
+				yend = (int)(pos[1] + this.trunkheight);
 			}
 			this.branchdensity = BRANCHDENSITY / FOLIAGEDENSITY;
 			
-			int topy = treeposition[1]+(int)(this.trunkheight + 0.5D);
+			int topy = pos[1]+(int)(this.trunkheight + 0.5D);
 			
-			int ystart = treeposition[1];
+			int ystart = pos[1];
 			int num_of_clusters_per_y = (int)(1.5 + Math.pow((FOLIAGEDENSITY * this.height / 19.), 2));
 			int[][] foliage_coords = new int[num_of_clusters_per_y * this.height][3];
 			if(num_of_clusters_per_y < 1) num_of_clusters_per_y = 1;
@@ -547,18 +548,20 @@ public class Trees {
 				if(ystart > 127) ystart = 127;
 			}
 			
-			for (int y = yend; ystart < -1; y++) { //again with the range(yend,ystart,-1) shit
+			System.out.println(ystart);
+			System.out.println(yend);
+			for (int y = -1; ystart < yend; y++) { //again with the range(yend,ystart,-1) shit
 				for (int i = 0; i < num_of_clusters_per_y; i++) {
 					double shapefac = this.shapefunc(y-ystart);
 					if(shapefac == Double.MIN_VALUE) continue;
 					double r = (Math.sqrt(Math.random()) + .328) * shapefac;
 					
 					double theta = Math.random()*2*Math.PI;
-					int x = (int)(r * Math.sin(theta) + treeposition[0]);
-					int z = (int)(r * Math.cos(theta) + treeposition[2]);
+					int x = (int)(r * Math.sin(theta) + pos[0]);
+					int z = (int)(r * Math.cos(theta) + pos[2]);
 					
 					if(STOPSBRANCHES.length != 0) {
-						double dist = (Math.sqrt(Math.pow(x-treeposition[0], 2) + Math.pow(z-treeposition[2], 2)));
+						double dist = (Math.sqrt(Math.pow(x-pos[0], 2) + Math.pow(z-pos[2], 2)));
 						double slope = this.branchslope;
 						int starty;
 						if((y - dist*slope) > topy) {
@@ -567,23 +570,28 @@ public class Trees {
 							starty = (int) (y-dist*slope);
 						}
 						
-						int[] start = {treeposition[0], starty, treeposition[2]};
-						int[] offset = {x - treeposition[0], y - starty, z-treeposition[2]};
+						int[] start = {pos[0], starty, pos[2]};
+						int[] offset = {x - pos[0], y - starty, z-pos[2]};
 						double offlength = Math.sqrt(Math.pow(offset[0], 2) + Math.pow(offset[1], 2) + Math.pow(offset[2], 2));
+						System.out.println(offlength);
 						if(offlength < 1) continue;
 						
 						int[] vec = {0,0,0};
 						i = 0;
 						while(i < 3) {
 							vec[i] = (int) (offset[i] / offlength);
+							++i;
 						}
 						
 						int mat_dist = dist_to_mat(start, vec, STOPSBRANCHES, this.mcmap, false, true, (int)offlength+3);
-						if(mat_dist < (int)offlength+2) {
+						if(mat_dist < offlength+2) {
+							System.out.println(mat_dist);
 							continue;
+							
 						}
 					}
 					 //original shit:  foliage_coords += [[x,y,z]] whatever it means
+					//System.out.printf("assigning foliage coords %d %d %d", (int)x,(int)y,(int)z);
 					foliage_coords[i][0] = x;
 					foliage_coords[i][1] = y;
 					foliage_coords[i][2] = z;
@@ -596,7 +604,6 @@ public class Trees {
 		@Override
 		void makefoliage() {
 			//i have no clue how multidimensional arrays work the source i am porting this from
-			int[][] foliage_coords = this.foliage_coords;
 			int l = foliage_coords.length;
 			int i;
 			for (i = 0; i < l; i++) {
