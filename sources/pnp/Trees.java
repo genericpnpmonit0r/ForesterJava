@@ -55,8 +55,8 @@ public class Trees {
 	public static final Random RANDOM = new Random();
 
 	/* info:
-	 * see original/porting/mceditforester/Forester.py for the original code
-	 * and original/porting/BasicTree.java
+	 * see porting/mceditforester/Forester.py for the original code
+	 * and porting/BasicTree.java for the bare-bones MC implementation that doesn't have all the things
 	 */
 	
 	//just an interface to allow more portability of code
