@@ -409,6 +409,7 @@ public class Trees {
 			double[] level_radius = this.foliage_shape;
 			for (double i : level_radius) {
 				this.crossection(x, y, z, i, 1, LEAFMAT, LEAFDATA);
+				System.out.println("placing foliage "+x + " "+y+" "+z);
 				y +=1;
 			}
 		}
@@ -689,9 +690,9 @@ public class Trees {
 						}
 					}
 					//original shit:  foliage_coords += [[x,y,z]] whatever it means
-					foliage_coords[i][0] = z;
-					foliage_coords[i][1] = x;
-					foliage_coords[i][2] = y;
+					foliage_coords[i][0] = x;
+					foliage_coords[i][1] = y;
+					foliage_coords[i][2] = z;
 				}
 			}
 
