@@ -35,7 +35,7 @@ public class Trees {
 	public static int WOODMAT = 17;
 	public static int WOODDATA = 0; //metadata
 	public static int LEAFMAT = 18;
-	public static int LEAFDATA = 0; //metadata
+	public static int LEAFDATA = 4; //metadata
 	public static int LIGHTMAT = 50; //light id
 	public static int LIGHTDATA = 0; //light metadata
 	//hollow trunk fillers (air)
@@ -245,8 +245,8 @@ public class Trees {
 		t.pos[1] = y;
 		t.pos[2] = z;
 		t.prepare();
-		t.maketrunk();
 		t.makefoliage();
+		t.maketrunk();
 	}
 	
 	public static abstract class Tree {
@@ -645,16 +645,16 @@ public class Trees {
 				if(yend > 127) yend = 127;
 				if(ystart > 127) ystart = 127;
 			}
-			System.out.println("yend: "+yend);
-			System.out.println("ystart: "+ystart);
+			//System.out.println("yend: "+yend);
+			//System.out.println("ystart: "+ystart);
 			
 			
 			
 			for (int y = yend; y >= ystart; y--) { //again with the range(yend,ystart,-1) shit
 				for(int i = 0; i < num_of_clusters_per_y; i++) {
 					Double shapefac = this.shapefunc(y-ystart);
-					System.out.println("y: "+y);
-					System.out.println("ystart: "+ ystart);
+					//System.out.println("y: "+y);
+					//System.out.println("ystart: "+ ystart);
 					
 					if(shapefac == null) continue;
 					double r = (Math.sqrt(Math.random()) + .328) * 69;//shapefac.doubleValue();
@@ -856,7 +856,7 @@ public class Trees {
 		
 		@Override
 		Double shapefunc(int y) {
-			System.out.println("shapefuck: "+y);
+			//System.out.println("shapefuck: "+y);
 			Double twigs = super.shapefunc(y);
 			if(twigs != null) {
 				return twigs;
