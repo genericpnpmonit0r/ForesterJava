@@ -18,7 +18,7 @@ public abstract class Tree {
 
 	@Override
 	public String toString() {
-		return String.format("Tree{pos=(%d,%d,%d),height=%d,type=}", 
+		return String.format("Tree{pos=(%d,%d,%d),height=%d,type=%s}", 
 				this.pos[0], this.pos[1], this.pos[2], this.height, this.getClass().getSimpleName());
 	}
 }
