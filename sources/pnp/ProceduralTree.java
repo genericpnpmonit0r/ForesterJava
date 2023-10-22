@@ -160,18 +160,19 @@ public abstract class ProceduralTree extends Tree {
 			int[] startcoord = { rootx + rndx, treeposition[1] + rndy, rootz + rndz };
 
 			int[] offset = { 0, 0, 0 };
-			for (int i = 0; i < 3; i++) {
+			int i;
+			for (i = 0; i < 3; i++) {
 				offset[i] = startcoord[i] - coord[i];
 			}
 
 			if (Forester.SHAPE == ForesterShape.MANGROVE) {
-				for (int i = 0; i < 3; i++) {
+				for (i = 0; i < 3; i++) {
 					offset[i] = (int) (offset[i] * 1.618 - 1.5);
 				}
 			}
 
 			int[] endcoord = { 0, 0, 0 };
-			for (int i = 0; i < 3; i++) {
+			for (i = 0; i < 3; i++) {
 				endcoord[i] = startcoord[i] + offset[i];
 			}
 
@@ -190,7 +191,7 @@ public abstract class ProceduralTree extends Tree {
 				}
 				double rootmid = endsize;
 				int vec[] = { 0, 0, 0 };
-				for (int i = 0; i < 3; i++) {
+				for (i = 0; i < 3; i++) {
 					vec[i] = offset[i] / offlength;
 				}
 				
@@ -203,14 +204,14 @@ public abstract class ProceduralTree extends Tree {
 
 				int startdist = (int) (Math.random() * 6 * Math.sqrt(rootstartsize) + 2.8);
 				int[] searchstart = { 0, 0, 0 };
-				for (int i = 0; i < 3; i++) {
+				for (i = 0; i < 3; i++) {
 					searchstart[i] = startcoord[i] + startdist*vec[i];
 				}
 				dist = startdist + Forester.dist_to_mat(searchstart, vec, searchindex, this.mcmap, false, offlength);
 				
 				if (dist < offlength) {
 					rootmid += (rootstartsize - endsize) * (1 - dist / offlength);
-					for (int i = 0; i < 3; i++) {
+					for (i = 0; i < 3; i++) {
 						endcoord[i] = startcoord[i] + (int)(vec[i] * dist);
 					}
 					if (Forester.ROOTS == ForesterRoots.HANGING) {
@@ -348,7 +349,7 @@ public abstract class ProceduralTree extends Tree {
 
 					int[] vec = { 0, 0, 0 };
 					for (int k = 0; k < 3; k++) {
-						vec[i] = (int) (offset[i] / offlength);
+						vec[k] = (int) (offset[k] / offlength);
 					}
 						
 					int mat_dist = Forester.dist_to_mat(start, vec, Forester.STOPSBRANCHES, this.mcmap, false, (int) offlength + 3);

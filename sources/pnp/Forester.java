@@ -41,8 +41,8 @@ public class Forester {
 
 	// Restrictions
 	public static int[] PLANTON = { 2 }; // what blocks to plant on
-	public static int[] STOPSROOTS = { 1 }; // what blocks to inhibit roots on
-	public static int[] STOPSBRANCHES = { }; // what blocks to inhibit branches on
+	public static int[] STOPSROOTS = { 1,7 }; // what blocks to inhibit roots on
+	public static int[] STOPSBRANCHES = {1,4,20,7}; // what blocks to inhibit branches on
 
 	public static final Random RANDOM = new Random();
 
@@ -111,6 +111,15 @@ public class Forester {
 		Integer[] out = new Integer[length];
 		for (int i = 0; i < length; i++) {
 			out[i] = Integer.valueOf(primitive[i]);
+		}
+		return out;
+	}
+	
+	public static int[] objToPrimitive(Integer[] obj) {
+		int length = obj.length;
+		int[] out = new int[length];
+		for (int i = 0; i < length; i++) {
+			out[i] = obj[i].intValue();
 		}
 		return out;
 	}
