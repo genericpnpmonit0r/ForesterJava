@@ -30,7 +30,7 @@ public class RainforestTree extends ProceduralTree {
 			double width = this.height * .382;
 			double topdist = (this.height - y) / (this.height * 0.2);
 			double dist = width * (0.618 + topdist) * (0.618 + Math.random()) * 0.382;
-			return Double.valueOf(dist);
+			return dist;
 		}
 	}
 }

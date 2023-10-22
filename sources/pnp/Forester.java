@@ -164,7 +164,7 @@ public class Forester {
 		mcmap.setBlockAndMetadataWithNotify(x, y, z, id, meta);
 	}
 
-	static int choice(int... src) {
+	public static int choice(int... src) {
 		return src[RANDOM.nextInt(src.length)];
 	}
 
@@ -190,6 +190,7 @@ public class Forester {
 			} else {
 				int blockID = block.blockID;
 
+				//TODO: figure out if this is actually correct cause complaining about unlikely argument type...
 				if (Arrays.asList(matidxlist).contains(blockID) && !invert) {
 					break;
 				} else if (!Arrays.asList(matidxlist).contains(blockID) && invert) {

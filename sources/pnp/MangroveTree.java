@@ -1,5 +1,8 @@
 package pnp;
 
+/**
+ * This kind of tree is designed to resemble a mangrove tree.
+ */
 public class MangroveTree extends RoundTree {
 	public MangroveTree(MCWorldAccessor mcmap) {
 		super(mcmap);
@@ -22,6 +25,6 @@ public class MangroveTree extends RoundTree {
 		double val2 = val.doubleValue();
 		val2 = val2 * 1.618;
 		
-		return Double.valueOf(val2);
+		return val2;
 	}
 }

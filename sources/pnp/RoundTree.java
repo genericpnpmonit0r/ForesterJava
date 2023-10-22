@@ -34,6 +34,6 @@ public class RoundTree extends ProceduralTree {
 			dist = Math.sqrt((Math.pow(radius, 2) - Math.pow(adj, 2)));
 			dist = dist * .618;
 		}
-		return Double.valueOf(dist);
+		return dist;
 	}
 }

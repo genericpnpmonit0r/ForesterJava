@@ -1,5 +1,8 @@
 package pnp;
 
+/**
+ * This kind of tree is designed to resemble a conifer tree.
+ */
 public class ConeTree extends ProceduralTree {
 	public ConeTree(MCWorldAccessor mcmap) {
 		super(mcmap);
@@ -26,6 +29,6 @@ public class ConeTree extends ProceduralTree {
 		if (radius < 0) {
 			radius = 0;
 		}
-		return Double.valueOf(radius);
+		return radius;
 	}
 }

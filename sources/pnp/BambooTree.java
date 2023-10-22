@@ -5,6 +5,10 @@ public class BambooTree extends StickTree {
 		this.mcmap = mcmap;
 	}
 
+	/**
+	 * Set up the foliage for a bamboo tree.<br>
+	 * Make foliage sparse and adjacent to the trunk.
+	 */
 	@Override
 	public void makefoliage() {
 		int start = this.pos[1];

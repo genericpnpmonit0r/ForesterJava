@@ -1,10 +1,19 @@
 package pnp;
 
+/**
+ * Set up the foliage for a 'normal' tree.<br>
+ * This tree will be a single bulb of foliage above a single width trunk.<br>
+ * This shape is very similar to the default Minecraft tree.
+ */
 public class NormalTree extends StickTree {
 	public NormalTree(MCWorldAccessor mcmap) {
 		this.mcmap = mcmap;
 	}
 
+	/**
+	 *note, foliage will disintegrate if there is no foliage below, or<br>
+	 * if there is no "log" block within range 2 (square) at the same level or one level below
+	 */
 	@Override
 	public void makefoliage() {
 		int topy = this.pos[1] + this.height - 1;
@@ -18,7 +27,7 @@ public class NormalTree extends StickTree {
 				rad = 2;
 			}
 			int x, z;
-			for (int xoff = -rad; xoff < rad + 1; xoff++) { // hope this is how range() works i have no fucking clue
+			for (int xoff = -rad; xoff < rad + 1; xoff++) {
 				for (int zoff = -rad; zoff < rad + 1; zoff++) {
 					if (Math.random() > 0.618D && Math.abs(xoff) == Math.abs(zoff) && Math.abs(xoff) == rad) {
 						continue;

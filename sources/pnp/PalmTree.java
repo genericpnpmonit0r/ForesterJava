@@ -5,6 +5,10 @@ public class PalmTree extends StickTree {
 		this.mcmap = mcmap;
 	}
 
+	/**
+	 * Set up the foliage for a palm tree.<br>
+	 * Make foliage stick out in four directions from the top of the trunk.
+	 */
 	@Override
 	public void makefoliage() {
 		int y = this.pos[1] + this.height;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public abstract class ProceduralTree extends Tree {
 	protected double trunkheight;
 	protected double[] foliage_shape;
-	protected int[][] foliage_coords;
+	private int[][] foliage_coords;
 	protected double trunkradius;
 	protected double branchdensity;
 	protected double branchslope;
@@ -318,7 +318,7 @@ public abstract class ProceduralTree extends Tree {
 		if (ystart > 127)
 			ystart = 127;
 
-		for (int y : Forester.range(yend, ystart, -1)) { // again with the range(yend,ystart,-1) shit
+		for (int y : Forester.range(yend, ystart, -1)) {
 			for (int i = 0; i < num_of_clusters_per_y; i++) {
 				Double shapefac = this.shapefunc(y - ystart);
 				if (shapefac == null)
@@ -356,7 +356,6 @@ public abstract class ProceduralTree extends Tree {
 						continue;
 					}
 				}
-				// original shit: foliage_coords += [[x,y,z]] whatever it means
 				foliage_coords.add(new int[] { x, y, z });
 			}
 		}
