@@ -7,6 +7,7 @@ import java.util.Random;
 import net.minecraft.src.Block;
 
 public class Forester {
+	//TODO: make these into instance fields not static ones
 	// Tree settings
 	public static ForesterShape SHAPE = ForesterShape.ROUND;
 	public static int CENTERHEIGHT = 55;
