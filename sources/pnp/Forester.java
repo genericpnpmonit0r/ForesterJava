@@ -106,6 +106,15 @@ public class Forester {
 		return arr.stream().mapToInt(i -> i).toArray();
 	}
 	
+	public static Integer[] primitiveToObjInt(int[] primitive) {
+		int length = primitive.length;
+		Integer[] out = new Integer[length];
+		for (int i = 0; i < length; i++) {
+			out[i] = Integer.valueOf(primitive[i]);
+		}
+		return out;
+	}
+	
 	public static int max_key_abs(int[] arr) {
 		int biggestABSValueSoFar = 0;
 		int biggestValueSoFar = 0;
@@ -169,7 +178,6 @@ public class Forester {
 		return src[RANDOM.nextInt(src.length)];
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	public static int dist_to_mat(int[] cord, int[] vec, int[] matidxlist, 
 			MCWorldAccessor mcmap, boolean invert, Integer limit) {
 		double[] curcord = { 0, 0, 0 };
@@ -191,10 +199,9 @@ public class Forester {
 			} else {
 				int blockID = block.blockID;
 
-				//TODO: figure out if this is actually correct cause complaining about unlikely argument type...
-				if (Arrays.asList(matidxlist).contains(blockID) && !invert) {
+				if (Arrays.asList(primitiveToObjInt(matidxlist)).contains(blockID) && !invert) {
 					break;
-				} else if (!Arrays.asList(matidxlist).contains(blockID) && invert) {
+				} else if (!Arrays.asList(primitiveToObjInt(matidxlist)).contains(blockID) && invert) {
 					break;
 				} else {
 					for (int i = 0; i < 3; i++) {
