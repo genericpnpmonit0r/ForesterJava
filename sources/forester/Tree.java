@@ -9,7 +9,7 @@ public abstract class Tree {
 	public int[] pos;
 	public int height;
 	
-	/* Tree settings, use the setters to set the parameters (less clutter) these are just the defaults, these are prefixed with tree_ to prevent conflicts with other sub-class instance fields */
+	/* Tree settings, these are just the defaults, these are prefixed with tree_ to prevent conflicts with other sub-class instance fields */
 	/**
 	 * Which shapes would you like the trees to be? these first three are best suited for small heights, from 5 - 10<br>
 	 * <br>
