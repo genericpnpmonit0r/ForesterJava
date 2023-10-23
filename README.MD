@@ -11,3 +11,5 @@ The Minecraft forester script ported to Java
 7. Open net.minecraft.src.World and add `forester.MCWorldAccessor` interface to the list of implementations
 
 8. Then you should be able to call the generateTree method from Forester.java
+
+See example.txt for details on basic instructions how to use the code
