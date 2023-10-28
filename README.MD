@@ -13,4 +13,4 @@ The Minecraft forester script ported to Java
 8. Then you should be able to call the generateTree method from Tree.java
 9. to be able to reobf with these classes you would need to copy the contents of sources/ to src/minecraft/
 
-See example.txt for details on basic instructions how to use the code
+See example.java for details on basic instructions how to use the code
