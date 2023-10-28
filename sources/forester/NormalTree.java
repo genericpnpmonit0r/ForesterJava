@@ -11,8 +11,8 @@ public class NormalTree extends StickTree {
 	}
 
 	/**
-	 *note, foliage will disintegrate if there is no foliage below, or<br>
-	 * if there is no "log" block within range 2 (square) at the same level or one level below
+	 * note, foliage will disintegrate if there is no foliage below, or if there is
+	 * no "log" block within range 2 (square) at the same level or one level below
 	 */
 	@Override
 	public void makefoliage() {
@@ -29,7 +29,7 @@ public class NormalTree extends StickTree {
 			int x, z;
 			for (int xoff = -rad; xoff < rad + 1; xoff++) {
 				for (int zoff = -rad; zoff < rad + 1; zoff++) {
-					if (Math.random() > 0.618D && Math.abs(xoff) == Math.abs(zoff) && Math.abs(xoff) == rad) {
+					if (this.random.nextDouble() > 0.618D && Math.abs(xoff) == Math.abs(zoff) && Math.abs(xoff) == rad) {
 						continue;
 					}
 					x = this.pos[0] + xoff;

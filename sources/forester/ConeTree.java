@@ -22,7 +22,7 @@ public class ConeTree extends ProceduralTree {
 		if (twigs != null) {
 			return twigs;
 		}
-		if (y < this.height * (.25 + .05 * Math.sqrt(Math.random()))) {
+		if (y < this.height * (.25 + .05 * Math.sqrt(this.random.nextDouble()))) {
 			return null;
 		}
 		double radius = (this.height - y) * 0.382;

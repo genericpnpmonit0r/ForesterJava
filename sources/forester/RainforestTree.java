@@ -21,7 +21,7 @@ public class RainforestTree extends ProceduralTree {
 		if (y < this.height * 0.8) {
 			if (this.tree_EDGEHEIGHT < this.height) {
 				twigs = super.shapefunc(y);
-				if (twigs != null && Math.random() < 0.07) {
+				if (twigs != null && this.random.nextDouble() < 0.07) {
 					return twigs;
 				}
 			}
@@ -29,7 +29,7 @@ public class RainforestTree extends ProceduralTree {
 		} else {
 			double width = this.height * .382;
 			double topdist = (this.height - y) / (this.height * 0.2);
-			double dist = width * (0.618 + topdist) * (0.618 + Math.random()) * 0.382;
+			double dist = width * (0.618 + topdist) * (0.618 + this.random.nextDouble()) * 0.382;
 			return dist;
 		}
 	}

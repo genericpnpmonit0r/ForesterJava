@@ -20,7 +20,7 @@ public class RoundTree extends ProceduralTree {
 		if (twigs != null) {
 			return twigs;
 		}
-		if (y < this.height * (.282 + .1 * Math.sqrt(Math.random()))) {
+		if (y < this.height * (.282 + .1 * Math.sqrt(this.random.nextDouble()))) {
 			return null;
 		}
 		double radius = this.height / 2.;

@@ -24,7 +24,7 @@ public class MangroveTree extends RoundTree {
 
 		double val2 = val.doubleValue();
 		val2 = val2 * 1.618;
-		
+
 		return val2;
 	}
 }

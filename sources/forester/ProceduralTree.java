@@ -5,14 +5,15 @@ import java.util.ArrayList;
 /**
  * Set up the methods for a larger more complicated tree.<BR>
  * <BR>
- * This tree type has roots, a trunk, and branches all of varying width, and many foliage clusters.<BR>
- * MUST BE SUBCLASSED.  Specifically, this.foliage_shape must be set.<BR>
+ * This tree type has roots, a trunk, and branches all of varying width, and
+ * many foliage clusters.<BR>
+ * MUST BE SUBCLASSED. Specifically, this.foliage_shape must be set.<BR>
  * Subclass 'prepare' and 'shapefunc' to make different shaped trees.<BR>
  */
 public abstract class ProceduralTree extends Tree {
 	protected double trunkheight;
 	protected double[] foliage_shape;
-	private int[][] foliage_coords;
+	private ArrayList<int[]> foliage_coords;
 	protected double trunkradius;
 	protected double branchdensity;
 	protected double branchslope;
@@ -22,27 +23,29 @@ public abstract class ProceduralTree extends Tree {
 	}
 
 	/**
-	 * Create a round section of type matidx in mcmap.
-	 * <br>
-	 * @param x x coord of center
-	 * @param y y coord of center
-	 * @param z z coord of center
-	 * @param radius the radius of the section
-	 * @param diraxis The list index for the axis to make the section perpendicular to. 0 indicates the x axis, 1 the y, 2 the z. The section will extend along the other two axies
-	 * @param mat the integer value to make the section out of
-	 * @param data the integer value to make the metadata of the section out of
+	 * Create a round section of type matidx in mcmap. <br>
+	 * 
+	 * @param x       coord of center
+	 * @param y       coord of center
+	 * @param z       coord of center
+	 * @param radius  the radius of the section
+	 * @param diraxis The list index for the axis to make the section perpendicular
+	 *                to. 0 indicates the x axis, 1 the y, 2 the z. The section will
+	 *                extend along the other two axies
+	 * @param mat     the integer value to make the section out of
+	 * @param data    the integer value to make the metadata of the section out of
 	 */
 	private void crossection(int x, int y, int z, double radius, int diraxis, int mat, int data) {
 		int rad = (int) (radius + .618D);
-		if (rad <= 0) return;
-		int[] coord = { 0, 0, 0 };
+		if (rad <= 0)
+			return;
 		int[] center = { x, y, z };
+		int[] coord = { 0, 0, 0 };
 		int secidx1 = Forester.getOtherIndexes(center, diraxis)[0];
 		int secidx2 = Forester.getOtherIndexes(center, diraxis)[1];
-		for (int off1 : Forester.range(-rad, rad + 1, 1)) {
-			for (int off2 : Forester.range(-rad, rad + 1, 1)) {
-				double thisdist = Math
-						.sqrt(Math.pow(Math.abs(off1) + 0.5D, 2) + Math.pow(Math.abs(off2) + 0.5D, 2));
+		for (int off1 = -rad; off1 < rad + 1; off1++) {
+			for (int off2 = -rad; off2 < rad + 1; off2++) {
+				double thisdist = Math.sqrt(Math.pow(Math.abs(off1) + 0.5D, 2) + Math.pow(Math.abs(off2) + 0.5D, 2));
 				if (thisdist > radius) {
 					continue;
 				}
@@ -62,10 +65,11 @@ public abstract class ProceduralTree extends Tree {
 	 * <br>
 	 * If no foliage cluster is to be created, return null<br>
 	 * Designed for sub-classing. Only makes clusters close to the trunk.<br>
+	 * 
 	 * @param y y coordinate
 	 */
 	protected Double shapefunc(int y) {
-		if (Math.random() < 100 / (Math.pow(this.height, 2)) && y < this.trunkheight) {
+		if (this.random.nextDouble() < 100. / (Math.pow(this.height, 2)) && y < this.trunkheight) {
 			return this.height * .12;
 		}
 		return null;
@@ -76,13 +80,14 @@ public abstract class ProceduralTree extends Tree {
 	 * <br>
 	 * The shape of the cluster is defined by the list this.foliage_shape.<br>
 	 * This list must be set in a subclass of ProceduralTree.<br>
+	 * 
 	 * @param x x coordinate
 	 * @param y y coordinate
 	 * @param z z coordinate
 	 */
 	private void foliagecluster(int x, int y, int z) {
 		double[] level_radius = this.foliage_shape;
-		
+
 		for (double i : level_radius) {
 			this.crossection(x, y, z, i, 1, this.tree_LEAFMAT, this.tree_LEAFDATA);
 			y += 1;
@@ -92,23 +97,24 @@ public abstract class ProceduralTree extends Tree {
 	/**
 	 * Create a tapered cylinder in mcmap.<br>
 	 * <br>
-     * @param start beginning x y z coordinates
-     * @param end ending x y z coordinates
-     * @param startsize the beginning radius
-     * @param endsize the ending radius
-     * @param blockmat block id
-     * @param blockdata block metadata
+	 * 
+	 * @param start     beginning x y z coordinates
+	 * @param end       ending x y z coordinates
+	 * @param startsize the beginning radius
+	 * @param endsize   the ending radius
+	 * @param blockmat  block id
+	 * @param blockdata block metadata
 	 */
 	private void taperedcylinder(int[] start, int[] end, double startsize, double endsize, int blockmat, int blockdata) {
 		int[] delta = { 0, 0, 0 };
 		for (int i = 0; i < 3; i++) {
-			delta[i] = (int)(end[i] - start[i]);
+			delta[i] = (int) (end[i] - start[i]);
 		}
 		int maxdist = Forester.max_key_abs(delta);
 		if (maxdist == 0) {
 			return;
 		}
-		
+
 		int primidx = Forester.getArrayIndex(delta, maxdist);
 		int secidx1 = Forester.getOtherIndexes(delta, primidx)[0];
 		int secidx2 = Forester.getOtherIndexes(delta, primidx)[1];
@@ -121,7 +127,7 @@ public abstract class ProceduralTree extends Tree {
 
 		int[] coord = { 0, 0, 0 };
 		int endoffset = delta[primidx] + primsign;
-		for (int primoffset : Forester.range(0, endoffset, primsign)) {
+		for (int primoffset = 0; primoffset != endoffset; primoffset += primsign) {
 			int primloc = (int) (start[primidx] + primoffset);
 			int secloc1 = (int) (start[secidx1] + (primoffset * secfac1));
 			int secloc2 = (int) (start[secidx2] + (primoffset * secfac2));
@@ -140,29 +146,28 @@ public abstract class ProceduralTree extends Tree {
 	 * rootbases = [[x,z,base_radius], ...] and is the list of locations<br>
 	 * the roots can originate from, and the size of that location.<br>
 	 */
-	private void makeroots(double[][] rootbases) {
+	private void makeroots(ArrayList<double[]> rootbases) {
 		int[] treeposition = this.pos;
 		int height = this.height;
 
 		for (int[] coord : this.foliage_coords) {
-			double dist = Math
-					.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
+			double dist = Math.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
 			int ydist = coord[1] - treeposition[1];
 			double value = (this.branchdensity * 220 * height) / (Math.pow((ydist + dist), 3));
-			if (value < Math.random()) {
+			if (value < this.random.nextDouble()) {
 				continue;
 			}
 
-			double[] rootbase = rootbases[RANDOM.nextInt(rootbases.length)];
+			double[] rootbase = rootbases.get(this.random.nextInt(rootbases.size()));
 			int rootx = (int) rootbase[0];
 			int rootz = (int) rootbase[1];
 			double rootbaseradius = rootbase[2];
 
-			double rndr = Math.sqrt(Math.random()) * rootbaseradius * .618;
-			double rndang = Math.random() * 2 * Math.PI;
+			double rndr = Math.sqrt(this.random.nextDouble()) * rootbaseradius * .618;
+			double rndang = this.random.nextDouble() * 2 * Math.PI;
 			int rndx = (int) (rndr * Math.sin(rndang) + 0.5);
 			int rndz = (int) (rndr * Math.cos(rndang) + 0.5);
-			int rndy = (int) (Math.random() * rootbaseradius * 0.5);
+			int rndy = (int) (this.random.nextDouble() * rootbaseradius * 0.5);
 
 			int[] startcoord = { rootx + rndx, treeposition[1] + rndy, rootz + rndz };
 
@@ -201,7 +206,7 @@ public abstract class ProceduralTree extends Tree {
 				for (i = 0; i < 3; i++) {
 					vec[i] = offset[i] / offlength;
 				}
-				
+
 				int[] searchindex = { 0 };
 				if (this.tree_ROOTS == TreeRoots.TO_STONE) {
 					searchindex = this.tree_STOPSROOTS;
@@ -209,17 +214,17 @@ public abstract class ProceduralTree extends Tree {
 					searchindex = new int[] { 0 };
 				}
 
-				int startdist = (int) (Math.random() * 6 * Math.sqrt(rootstartsize) + 2.8);
+				int startdist = (int) (this.random.nextDouble() * 6 * Math.sqrt(rootstartsize) + 2.8);
 				int[] searchstart = { 0, 0, 0 };
 				for (i = 0; i < 3; i++) {
-					searchstart[i] = startcoord[i] + startdist*vec[i];
+					searchstart[i] = startcoord[i] + startdist * vec[i];
 				}
 				dist = startdist + Forester.dist_to_mat(searchstart, vec, searchindex, this.mcmap, false, offlength);
-				
+
 				if (dist < offlength) {
 					rootmid += (rootstartsize - endsize) * (1 - dist / offlength);
 					for (i = 0; i < 3; i++) {
-						endcoord[i] = startcoord[i] + (int)(vec[i] * dist);
+						endcoord[i] = startcoord[i] + (int) (vec[i] * dist);
 					}
 					if (this.tree_ROOTS == TreeRoots.HANGING) {
 						double remaining_dist = offlength - dist;
@@ -248,22 +253,21 @@ public abstract class ProceduralTree extends Tree {
 			endrad = 1.0;
 		}
 
-		for (int coord[] : this.foliage_coords) {
-			double dist = Math
-					.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
+		for (int[] coord : this.foliage_coords) {
+			double dist = Math.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
 			int ydist = coord[1] - treeposition[1];
 			double value = (this.branchdensity * 220 * height) / Math.pow((ydist + dist), 3);
-			if (value < Math.random()) {
+			if (value < this.random.nextDouble()) {
 				continue;
 			}
 
 			int posy = coord[1];
 			double branchy;
 			double basesize;
-			double slope = this.branchslope + (0.5 - Math.random()) * .16;
+			double slope = this.branchslope + (0.5 - this.random.nextDouble()) * .16;
 			if (coord[1] - dist * slope > topy) {
 				double threshhold = 1 / height;
-				if (Math.random() < threshhold) {
+				if (this.random.nextDouble() < threshhold) {
 					continue;
 				}
 
@@ -273,9 +277,9 @@ public abstract class ProceduralTree extends Tree {
 				branchy = posy - dist * slope;
 				basesize = (endrad + (this.trunkradius - endrad) * (topy - branchy) / this.trunkheight);
 			}
-			double startsize = basesize * (1 + Math.random()) * .618 * Math.pow(dist / height, 0.618);
-			double rndr = Math.sqrt(Math.random()) * basesize * 0.618;
-			double rndang = Math.random() * 2 * Math.PI;
+			double startsize = basesize * (1 + this.random.nextDouble()) * .618 * Math.pow(dist / height, 0.618);
+			double rndr = Math.sqrt(this.random.nextDouble()) * basesize * 0.618;
+			double rndang = this.random.nextDouble() * 2 * Math.PI;
 			int rndx = (int) (rndr * Math.sin(rndang) + 0.5);
 			int rndz = (int) (rndr * Math.cos(rndang) + 0.5);
 			int[] startcoord = { treeposition[0] + rndx, (int) branchy, treeposition[2] + rndz };
@@ -288,7 +292,10 @@ public abstract class ProceduralTree extends Tree {
 		}
 	}
 
-	/** Initialize the internal values for the Tree object. Primarily, sets up the foliage cluster locations.*/
+	/**
+	 * Initialize the internal values for the Tree object. Primarily, sets up the
+	 * foliage cluster locations.
+	 */
 	@Override
 	public void prepare() {
 		int[] treeposition = this.pos;
@@ -298,7 +305,7 @@ public abstract class ProceduralTree extends Tree {
 			this.trunkradius = 1;
 		}
 		if (this.tree_BROKENTRUNK) {
-			this.trunkheight = this.height * (.3 + Math.random() * .4);
+			this.trunkheight = this.height * (.3 + this.random.nextDouble() * .4);
 			yend = (int) (treeposition[1] + this.trunkheight + .5);
 		} else {
 			this.trunkheight = this.height;
@@ -311,24 +318,24 @@ public abstract class ProceduralTree extends Tree {
 		int ystart = treeposition[1];
 		int num_of_clusters_per_y = (int) (1.5 + Math.pow((this.tree_FOLIAGEDENSITY * this.height / 19.), 2));
 		ArrayList<int[]> foliage_coords = new ArrayList<int[]>();
-		
+
 		if (num_of_clusters_per_y < 1) {
 			num_of_clusters_per_y = 1;
 		}
 
-		if (yend > 127)
-			yend = 127;
-		if (ystart > 127)
-			ystart = 127;
+		if (yend > this.world_max_height)
+			yend = this.world_max_height;
+		if (ystart > this.world_max_height)
+			ystart = this.world_max_height;
 
-		for (int y : Forester.range(yend, ystart, -1)) {
+		for (int y = yend; y > ystart; y += -1) {
 			for (int i = 0; i < num_of_clusters_per_y; i++) {
 				Double shapefac = this.shapefunc(y - ystart);
 				if (shapefac == null)
 					continue;
-				double r = (Math.sqrt(Math.random()) + .328) * shapefac.doubleValue();
+				double r = (Math.sqrt(this.random.nextDouble()) + .328) * shapefac.doubleValue();
 
-				double theta = Math.random() * 2 * Math.PI;
+				double theta = this.random.nextDouble() * 2 * Math.PI;
 				int x = (int) (r * Math.sin(theta) + treeposition[0]);
 				int z = (int) (r * Math.cos(theta) + treeposition[2]);
 
@@ -353,8 +360,9 @@ public abstract class ProceduralTree extends Tree {
 					for (int k = 0; k < 3; k++) {
 						vec[k] = (int) (offset[k] / offlength);
 					}
-						
-					int mat_dist = Forester.dist_to_mat(start, vec, this.tree_STOPSBRANCHES, this.mcmap, false, (int) offlength + 3);
+
+					int mat_dist = Forester.dist_to_mat(start, vec, this.tree_STOPSBRANCHES, this.mcmap, false,
+							(int) offlength + 3);
 					if (mat_dist < (int) offlength + 2) {
 						continue;
 					}
@@ -363,18 +371,19 @@ public abstract class ProceduralTree extends Tree {
 			}
 		}
 
-		this.foliage_coords = foliage_coords.stream().map(u -> u).toArray(int[][]::new);;
+		this.foliage_coords = foliage_coords;
 	}
 
 	/**
 	 * Generate the foliage for the tree in mcmap.<br>
 	 * <br>
-	 * NOTE: foliage will disintegrate if there is no foliage below, or
-	 * if there is no "log" block within range 2 (square) at the same level or one level below
+	 * NOTE: foliage will disintegrate if there is no foliage below, or if there is
+	 * no "log" block within range 2 (square) at the same level or one level below
 	 */
 	@Override
 	public void makefoliage() {
-		int[][] foliage_coords = this.foliage_coords;
+		ArrayList<int[]> foliage_coords = this.foliage_coords;
+
 		for (int[] coord : foliage_coords) {
 			this.foliagecluster(coord[0], coord[1], coord[2]);
 		}
@@ -415,48 +424,44 @@ public abstract class ProceduralTree extends Tree {
 			endrad = 1.0;
 		if (midrad < endrad)
 			midrad = endrad;
-		double[][] rootbases;
+		ArrayList<double[]> rootbases = new ArrayList<double[]>();
 		double startrad;
 		int i;
-		
+
 		if (this.tree_ROOTBUTTRESSES || this.tree_SHAPE == TreeShape.MANGROVE) {
 			startrad = trunkradius * .8;
+			rootbases.add(new double[] { x, z, startrad });
 
 			double buttress_radius = trunkradius * 0.382;
 			double posradius = trunkradius;
 			int num_of_buttresses = (int) (Math.sqrt(trunkradius) + 3.5);
-			rootbases = new double[num_of_buttresses][3];
 
 			if (this.tree_SHAPE == TreeShape.MANGROVE) {
 				posradius = posradius * 2.618;
 			}
 
 			for (i = 0; i < num_of_buttresses; i++) {
-				double rnang = Math.random() * 2 * Math.PI;
-				double thisposradius = posradius * (0.9 + Math.random() * .2);
+				double rnang = this.random.nextDouble() * 2 * Math.PI;
+				double thisposradius = posradius * (0.9 + this.random.nextDouble() * .2);
 
 				int thisx = x + ((int) (thisposradius * Math.sin(rnang)));
 				int thisz = z + ((int) (thisposradius * Math.cos(rnang)));
 
-				double thisbuttressradius = buttress_radius * (0.618 + Math.random());
+				double thisbuttressradius = buttress_radius * (0.618 + this.random.nextDouble());
 				if (thisbuttressradius < 1.0) {
 					thisbuttressradius = 1.0;
 				}
 
-				this.taperedcylinder(new int[] { thisx, starty, thisz }, new int[] { x, midy, z },
-						thisbuttressradius, thisbuttressradius, this.tree_WOODMAT, this.tree_WOODDATA);
-				rootbases[i][0] = thisx;
-				rootbases[i][1] = thisz;
-				rootbases[i][2] = thisbuttressradius;
+				this.taperedcylinder(new int[] { thisx, starty, thisz }, new int[] { x, midy, z }, thisbuttressradius, thisbuttressradius, this.tree_WOODMAT, this.tree_WOODDATA);
+				rootbases.add(new double[] { thisx, thisz, thisbuttressradius });
 			}
 
 		} else {
 			startrad = trunkradius;
-			rootbases = new double[][] { { x, z, startrad } };
+			rootbases.add(new double[] { x, z, startrad });
 		}
 
-		this.taperedcylinder(new int[] { x, starty, z }, new int[] { x, midy, z }, startrad, midrad, this.tree_WOODMAT,
-				this.tree_WOODDATA);
+		this.taperedcylinder(new int[] { x, starty, z }, new int[] { x, midy, z }, startrad, midrad, this.tree_WOODMAT, this.tree_WOODDATA);
 
 		this.taperedcylinder(new int[] { x, midy, z }, new int[] { x, topy, z }, midrad, endrad, this.tree_WOODMAT, this.tree_WOODDATA);
 
@@ -467,7 +472,7 @@ public abstract class ProceduralTree extends Tree {
 		}
 
 		if (trunkradius > 2 && this.tree_HOLLOWTRUNK) {
-			double wall_thickness = (1 + trunkradius * 0.1 * Math.random());
+			double wall_thickness = (1 + trunkradius * 0.1 * this.random.nextDouble());
 			if (wall_thickness < 1.3) {
 				wall_thickness = 1.3;
 			}
@@ -480,17 +485,14 @@ public abstract class ProceduralTree extends Tree {
 
 			int base_offset = (int) (wall_thickness);
 			int[] x_choices = Forester.range(x - base_offset, x + base_offset + 1, 1);
-			int start_x = Forester.choice(RANDOM, x_choices);
+			int start_x = Forester.choice(this.random, x_choices);
 
 			int[] z_choices = Forester.range(z - base_offset, z + base_offset + 1, 1);
-			int start_z = Forester.choice(RANDOM, z_choices);
+			int start_z = Forester.choice(this.random, z_choices);
 
-			this.taperedcylinder(new int[] { start_x, starty, start_z }, 
-					new int[] { x, midy, z }, base_radius,
-					mid_radius, this.tree_TRUNKFILLMAT, this.tree_TRUNKFILLDATA);
+			this.taperedcylinder(new int[] { start_x, starty, start_z }, new int[] { x, midy, z }, base_radius, mid_radius, this.tree_TRUNKFILLMAT, this.tree_TRUNKFILLDATA);
 			int hollow_top_y = (int) (topy + trunkradius + 1.5);
-			this.taperedcylinder(new int[] { x, midy, z }, new int[] { x, hollow_top_y, z }, mid_radius, top_radius,
-					this.tree_TRUNKFILLMAT, this.tree_TRUNKFILLDATA);
+			this.taperedcylinder(new int[] { x, midy, z }, new int[] { x, hollow_top_y, z }, mid_radius, top_radius, this.tree_TRUNKFILLMAT, this.tree_TRUNKFILLDATA);
 		}
 	}
 }

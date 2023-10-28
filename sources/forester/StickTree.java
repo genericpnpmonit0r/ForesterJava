@@ -2,7 +2,7 @@ package forester;
 
 /**
  * Set up the trunk for trees with a trunk width of 1 and simple geometry.<br>
- * Designed for sub-classing.  Only makes the trunk.
+ * Designed for sub-classing. Only makes the trunk.
  */
 public abstract class StickTree extends Tree {
 	public StickTree() {
