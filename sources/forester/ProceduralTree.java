@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public abstract class ProceduralTree extends Tree {
 	protected double trunkheight;
 	protected double[] foliage_shape;
-	private ArrayList<int[]> foliage_coords;
+	private int[][] foliage_coords;
 	protected double trunkradius;
 	protected double branchdensity;
 	protected double branchslope;
@@ -146,7 +146,7 @@ public abstract class ProceduralTree extends Tree {
 	 * rootbases = [[x,z,base_radius], ...] and is the list of locations<br>
 	 * the roots can originate from, and the size of that location.<br>
 	 */
-	private void makeroots(ArrayList<double[]> rootbases) {
+	private void makeroots(double[][] rootbases) {
 		int[] treeposition = this.pos;
 		int height = this.height;
 
@@ -158,7 +158,7 @@ public abstract class ProceduralTree extends Tree {
 				continue;
 			}
 
-			double[] rootbase = rootbases.get(this.random.nextInt(rootbases.size()));
+			double[] rootbase = rootbases[this.random.nextInt(rootbases.length)];
 			int rootx = (int) rootbase[0];
 			int rootz = (int) rootbase[1];
 			double rootbaseradius = rootbase[2];
@@ -370,8 +370,7 @@ public abstract class ProceduralTree extends Tree {
 				foliage_coords.add(new int[] { x, y, z });
 			}
 		}
-
-		this.foliage_coords = foliage_coords;
+		this.foliage_coords = foliage_coords.toArray(new int[foliage_coords.size()][]);
 	}
 
 	/**
@@ -382,7 +381,7 @@ public abstract class ProceduralTree extends Tree {
 	 */
 	@Override
 	public void makefoliage() {
-		ArrayList<int[]> foliage_coords = this.foliage_coords;
+		int[][] foliage_coords = this.foliage_coords;
 
 		for (int[] coord : foliage_coords) {
 			this.foliagecluster(coord[0], coord[1], coord[2]);
@@ -468,7 +467,7 @@ public abstract class ProceduralTree extends Tree {
 		this.makebranches();
 
 		if (this.tree_ROOTS == TreeRoots.YES || this.tree_ROOTS == TreeRoots.TO_STONE || this.tree_ROOTS == TreeRoots.HANGING) {
-			this.makeroots(rootbases);
+			this.makeroots(rootbases.toArray(new double[rootbases.size()][]));
 		}
 
 		if (trunkradius > 2 && this.tree_HOLLOWTRUNK) {
