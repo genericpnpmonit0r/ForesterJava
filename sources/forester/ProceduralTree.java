@@ -10,10 +10,10 @@ import java.util.ArrayList;
  * MUST BE SUBCLASSED. Specifically, this.foliage_shape must be set.<BR>
  * Subclass 'prepare' and 'shapefunc' to make different shaped trees.<BR>
  */
-public abstract class ProceduralTree extends Tree {
+public abstract class ProceduralTree extends Tree { //not using iterator for list loops cause i need as much speed as i can get from anything...
 	protected double trunkheight;
 	protected double[] foliage_shape;
-	private int[][] foliage_coords;
+	private ArrayList<int[]> foliage_coords;
 	protected double trunkradius;
 	protected double branchdensity;
 	protected double branchslope;
@@ -146,11 +146,12 @@ public abstract class ProceduralTree extends Tree {
 	 * rootbases = [[x,z,base_radius], ...] and is the list of locations<br>
 	 * the roots can originate from, and the size of that location.<br>
 	 */
-	private void makeroots(double[][] rootbases) {
+	private void makeroots(ArrayList<double[]> rootbases) {
 		int[] treeposition = this.pos;
 		int height = this.height;
 
-		for (int[] coord : this.foliage_coords) {
+		for (int idx = 0; idx < this.foliage_coords.size(); idx++) {
+			int[] coord = this.foliage_coords.get(idx);
 			double dist = Math.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
 			int ydist = coord[1] - treeposition[1];
 			double value = (this.branchdensity * 220 * height) / (Math.pow((ydist + dist), 3));
@@ -158,7 +159,7 @@ public abstract class ProceduralTree extends Tree {
 				continue;
 			}
 
-			double[] rootbase = rootbases[this.random.nextInt(rootbases.length)];
+			double[] rootbase = rootbases.get(this.random.nextInt(rootbases.size()));
 			int rootx = (int) rootbase[0];
 			int rootz = (int) rootbase[1];
 			double rootbaseradius = rootbase[2];
@@ -253,7 +254,8 @@ public abstract class ProceduralTree extends Tree {
 			endrad = 1.0;
 		}
 
-		for (int[] coord : this.foliage_coords) {
+		for (int idx = 0; idx < this.foliage_coords.size(); idx++) {
+			int[] coord = this.foliage_coords.get(idx);
 			double dist = Math.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
 			int ydist = coord[1] - treeposition[1];
 			double value = (this.branchdensity * 220 * height) / Math.pow((ydist + dist), 3);
@@ -370,7 +372,7 @@ public abstract class ProceduralTree extends Tree {
 				foliage_coords.add(new int[] { x, y, z });
 			}
 		}
-		this.foliage_coords = foliage_coords.toArray(new int[foliage_coords.size()][]);
+		this.foliage_coords = foliage_coords;
 	}
 
 	/**
@@ -381,13 +383,16 @@ public abstract class ProceduralTree extends Tree {
 	 */
 	@Override
 	public void makefoliage() {
-		int[][] foliage_coords = this.foliage_coords;
-
-		for (int[] coord : foliage_coords) {
+		ArrayList<int[]> foliage_coords = this.foliage_coords;
+		
+		int idx;
+		for (idx = 0; idx < foliage_coords.size(); idx++) {
+			int[] coord = foliage_coords.get(idx);
 			this.foliagecluster(coord[0], coord[1], coord[2]);
 		}
 
-		for (int[] cord : foliage_coords) {
+		for (idx = 0; idx < foliage_coords.size(); idx++) {
+			int[] cord = foliage_coords.get(idx);
 			Forester.assign_value(cord[0], cord[1], cord[2], this.tree_WOODMAT, this.tree_WOODDATA, this.mcmap);
 			if (this.tree_LIGHTTREE == 1) {
 				Forester.assign_value(cord[0], cord[1] + 1, cord[2], this.tree_LIGHTMAT, this.tree_LIGHTDATA, this.mcmap);
@@ -467,7 +472,7 @@ public abstract class ProceduralTree extends Tree {
 		this.makebranches();
 
 		if (this.tree_ROOTS == TreeRoots.YES || this.tree_ROOTS == TreeRoots.TO_STONE || this.tree_ROOTS == TreeRoots.HANGING) {
-			this.makeroots(rootbases.toArray(new double[rootbases.size()][]));
+			this.makeroots(rootbases);
 		}
 
 		if (trunkradius > 2 && this.tree_HOLLOWTRUNK) {
