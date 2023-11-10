@@ -7,21 +7,21 @@ public class RoundTree extends ProceduralTree {
 
 	@Override
 	public void prepare() {
-		this.branchslope = 0.382;
+		this.branchSlope = 0.382;
 		super.prepare();
-		this.foliage_shape = new double[] { 2, 3, 3, 2.5, 1.6 };
-		this.trunkradius = this.trunkradius * 0.8;
-		this.trunkheight = this.tree_TRUNKHEIGHT * this.trunkheight;
+		this.foliageShape = new double[] { 2, 3, 3, 2.5, 1.6 };
+		this.trunkRadius = this.trunkRadius * 0.8;
+		this.trunkHeight = this.treeTrunkHeight * this.trunkHeight;
 	}
 
 	@Override
-	protected Double shapefunc(int y) {
-		Double twigs = super.shapefunc(y);
-		if (twigs != null) {
+	protected double shapeFunc(int y) {
+		double twigs = super.shapeFunc(y);
+		if (!Double.isNaN(twigs)) {
 			return twigs;
 		}
-		if (y < this.height * (.282 + .1 * Math.sqrt(this.random.nextDouble()))) {
-			return null;
+		if (y < this.height * (.282 + .1 * Math.sqrt(random.nextDouble()))) {
+			return Double.NaN;
 		}
 		double radius = this.height / 2.;
 		double adj = this.height / 2. - y;

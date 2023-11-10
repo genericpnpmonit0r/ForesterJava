@@ -8,29 +8,28 @@ public class RainforestTree extends ProceduralTree {
 
 	@Override
 	public void prepare() {
-		this.foliage_shape = new double[] { 3.4, 2.6 };
-		this.branchslope = 1.0;
+		this.foliageShape = new double[] { 3.4, 2.6 };
+		this.branchSlope = 1.0;
 		super.prepare();
-		this.trunkradius = this.trunkradius * 0.382;
-		this.trunkheight = this.trunkheight * .9;
+		this.trunkRadius = this.trunkRadius * 0.382;
+		this.trunkHeight = this.trunkHeight * .9;
 	}
 
 	@Override
-	protected Double shapefunc(int y) {
-		Double twigs;
+	protected double shapeFunc(int y) {
+		double twigs;
 		if (y < this.height * 0.8) {
-			if (this.tree_EDGEHEIGHT < this.height) {
-				twigs = super.shapefunc(y);
-				if (twigs != null && this.random.nextDouble() < 0.07) {
+			if (this.treeEdgeHeight < this.height) {
+				twigs = super.shapeFunc(y);
+				if (!Double.isNaN(twigs) && random.nextDouble() < 0.07) {
 					return twigs;
 				}
 			}
-			return null;
+			return Double.NaN;
 		} else {
 			double width = this.height * .382;
 			double topdist = (this.height - y) / (this.height * 0.2);
-			double dist = width * (0.618 + topdist) * (0.618 + this.random.nextDouble()) * 0.382;
-			return dist;
+            return width * (0.618 + topdist) * (0.618 + random.nextDouble()) * 0.382;
 		}
 	}
 }

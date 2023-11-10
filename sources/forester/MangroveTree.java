@@ -10,21 +10,20 @@ public class MangroveTree extends RoundTree {
 
 	@Override
 	public void prepare() {
-		this.branchslope = 1.0;
+		this.branchSlope = 1.0;
 		super.prepare();
-		this.trunkradius = this.trunkradius * 0.618;
+		this.trunkRadius = this.trunkRadius * 0.618;
 	}
 
 	@Override
-	protected Double shapefunc(int y) {
-		Double val = super.shapefunc(y);
+	protected double shapeFunc(int y) {
+		double val = super.shapeFunc(y);
 
-		if (val == null)
+		if (Double.isNaN(val))
 			return val;
 
-		double val2 = val.doubleValue();
-		val2 = val2 * 1.618;
-
-		return val2;
+		val *= 1.618;
+		
+		return val;
 	}
 }

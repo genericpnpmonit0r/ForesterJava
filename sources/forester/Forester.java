@@ -1,42 +1,59 @@
 package forester;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.src.Block;
 
 /**
  * This class contains only static utility methods to use in the various tree
- * classes, the tree options as well as the tree getter can be found in
- * {@link forester.Tree}
+ * classes, the tree options and the tree getter can be found in {@link forester.Tree}
  */
 public class Forester {
-	private Forester() {
-	}; // static methods only.
+	private Forester() { //static methods only.
+	}
 
-	public static int[] range(int start, int end, int step) { // use only if needed, for maximum speed use a normal for
-																// loop
-		ArrayList<Integer> arr = new ArrayList<Integer>();
+	public static int[] range(int start, int end, int step) { // use only if needed, for maximum speed use a normal for loop
+		int[] tbl = {};
+		int[] temp = null;
 
 		if (step < 0) {
 			for (int i = start; i > end; i += step) {
-				arr.add(i);
+				temp = new int[tbl.length + 1];
+				System.arraycopy(tbl, 0, temp, 0, tbl.length);
+				temp[tbl.length] = i;
+				tbl = temp;
 			}
 		} else {
 			for (int i = start; i < end; i += step) {
-				arr.add(i);
+				temp = new int[tbl.length + 1];
+				System.arraycopy(tbl, 0, temp, 0, tbl.length);
+				temp[tbl.length] = i;
+				tbl = temp;
 			}
 		}
 
-		int length = arr.size();
-		int[] out = new int[length];
-		for (int j = 0; j < length; j++) {
-			out[j] = arr.get(j).intValue();
-		}
-		return out;
+		return tbl;
 	}
 
-	public static int max_key_abs(int[] arr) {
+	/*
+	public static Integer[] rangeBoxed(int start, int end, int step) {
+		ArrayList<Integer> ints = new ArrayList<>();
+
+		if (step < 0) {
+			for (int i = start; i > end; i += step) {
+				ints.add(i);
+			}
+		} else {
+			for (int i = start; i < end; i += step) {
+				ints.add(i);
+			}
+		}
+
+		return ints.toArray(new Integer[0]);
+	}
+	*/
+
+	public static int maxKeyAbs(int[] arr) {
 		int biggestABSValueSoFar = 0;
 		int biggestValueSoFar = 0;
 
@@ -91,19 +108,15 @@ public class Forester {
 		return indexes;
 	}
 
-	public static void assign_value(int x, int y, int z, int id, int meta, MCWorldAccessor mcmap) {
-		mcmap.setBlockAndMetadataWithNotify(x, y, z, id, meta);
-	}
-
 	public static int choice(Random rnd, int... src) {
 		return src[rnd.nextInt(src.length)];
 	}
 
-	public static int dist_to_mat(int[] cord, int[] vec, int[] matidxlist, MCWorldAccessor mcmap, boolean invert,
-			Integer limit) {
+	/* original code for the loop was curcord = [i + .5 for i in cord] */
+	public static int distToMat(int[] cord, int[] vec, int[] matidxlist, MCWorldAccessor mcmap, boolean invert, Integer limit) {
 		double[] curcord = { 0, 0, 0 };
-		for (int i = 0; i < 3; i++) {
-			curcord[i] = i + .5;
+		for (int i = 0; i < cord.length; i++) { //not sure if correct
+			curcord[i] = cord[i] + .5;
 		}
 
 		int iterations = 0;
@@ -147,4 +160,20 @@ public class Forester {
 		}
 		return false;
 	}
+	
+	//debug entry point to test range() impl
+	/*
+	public static void main(String[] args) {
+		final int start = 20;
+		final int end = 0;
+		final int step = -1;
+		
+		int[] unboxed = range(start,end,step);
+		
+		Integer[] boxed = rangeBoxed(start,end,step);
+		
+		System.out.println("unbox: "+Arrays.toString(unboxed));
+		System.out.println("boxed: "+Arrays.toString(boxed));
+	}
+	*/
 }

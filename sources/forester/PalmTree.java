@@ -10,14 +10,15 @@ public class PalmTree extends StickTree {
 	 * Make foliage stick out in four directions from the top of the trunk.
 	 */
 	@Override
-	public void makefoliage() {
+	public void makeFoliage() {
 		int y = this.pos[1] + this.height;
 		for (int xoff = -2; xoff < 3; xoff++) {
 			for (int zoff = -2; zoff < 3; zoff++) {
 				if (Math.abs(xoff) == Math.abs(zoff)) {
 					int x = this.pos[0] + xoff;
 					int z = this.pos[2] + zoff;
-					Forester.assign_value(x, y, z, this.tree_LEAFMAT, this.tree_LEAFDATA, this.mcmap);
+					this.assignValue(x, y, z, this.treeLeafBlock, this.treeLeafMetadata);
+					
 				}
 			}
 		}

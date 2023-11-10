@@ -11,15 +11,15 @@ public class NormalTree extends StickTree {
 	}
 
 	/**
-	 * note, foliage will disintegrate if there is no foliage below, or if there is
-	 * no "log" block within range 2 (square) at the same level or one level below
+	 * note, foliage will disintegrate if there is no foliage below, or<br>
+	 * if there is no "log" block within range 2 (square) at the same level or one level below
 	 */
 	@Override
-	public void makefoliage() {
+	public void makeFoliage() {
 		int topy = this.pos[1] + this.height - 1;
 		int start = topy - 2;
 		int end = topy + 2;
-		int rad = 0;
+		int rad;
 		for (int y = start; y < end; y++) {
 			if (y > start + 1) {
 				rad = 1;
@@ -29,12 +29,12 @@ public class NormalTree extends StickTree {
 			int x, z;
 			for (int xoff = -rad; xoff < rad + 1; xoff++) {
 				for (int zoff = -rad; zoff < rad + 1; zoff++) {
-					if (this.random.nextDouble() > 0.618D && Math.abs(xoff) == Math.abs(zoff) && Math.abs(xoff) == rad) {
+					if (random.nextDouble() > 0.618D && Math.abs(xoff) == Math.abs(zoff) && Math.abs(xoff) == rad) {
 						continue;
 					}
 					x = this.pos[0] + xoff;
 					z = this.pos[2] + zoff;
-					Forester.assign_value(x, y, z, this.tree_LEAFMAT, this.tree_LEAFDATA, this.mcmap);
+					this.assignValue(x, y, z, this.treeLeafBlock, this.treeLeafMetadata);
 				}
 			}
 		}
