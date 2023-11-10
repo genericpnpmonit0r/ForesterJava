@@ -110,7 +110,7 @@ public abstract class ProceduralTree extends Tree {
 		}
 		
 		int primidx = Forester.getArrayIndex(delta, maxdist);
-		int secidx1 = Forester.getOtherIndexes(delta, primidx)[0];
+		int secidx1 = Forester.getOtherIndexes(delta, primidx)[0]; //an axis conversion array can probably be used as well
 		int secidx2 = Forester.getOtherIndexes(delta, primidx)[1];
 
 		int primsign = delta[primidx] / Math.abs(delta[primidx]);

@@ -2,11 +2,15 @@ package forester;
 
 import java.util.Random;
 
+/** The base class for all Forester trees. */
 public abstract class Tree {
-	public final Random random = new Random();
+	/** Random number generator, this is used instead of Math.random() to be able to set the seed used by the RNG */
+	protected final Random random = new Random();
+	/** MC world equivalent */
 	protected MCWorldAccessor mcmap;
-	/**Contains tree x y z coordinates [0] = x, [1] = y, [2] = z*/
+	/** Contains tree x y z coordinates [0] = x, [1] = y, [2] = z*/
 	public int[] pos;
+	/** Tree height*/
 	public int height;
 	
 	/*Static options for tree block rotation metadata on procedural trees*/
@@ -194,7 +198,7 @@ public abstract class Tree {
 	/** What kind of blocks should stop roots*/
 	public int[] treeRootStoppingBlocks = new int[]{ 1,7 };
 	/** What kind of blocks should stop branches (leave empty to skip check)*/
-	public int[] treeBranchStoppingBlocks = new int[]{};
+	public int[] treeBranchStoppingBlocks = new int[]{}; //currently broken.
 	
 	public Tree() {
 		this.pos = new int[] { 0, 0, 0 };
@@ -251,6 +255,10 @@ public abstract class Tree {
 				this.pos[0], this.pos[1], this.pos[2], this.height, this.getClass().getSimpleName());
 	}
 	
+	public void setTreeSeed(long seed) {
+		this.random.setSeed(seed);
+	}
+	
 	/**
 	 * Sets the tree shape and returns it
 	 * @param mcmap world
@@ -286,9 +294,5 @@ public abstract class Tree {
 		if(tree.treeWood) {
 			tree.makeTrunk();
 		}
-	}
-
-	public void setTreeSeed(long seed) {
-		this.random.setSeed(seed);
 	}
 }
