@@ -19,7 +19,7 @@ public abstract class Tree {
 	protected static final int LOG_ROT_X_METADATA = 2;
 	protected static final int LOG_ROT_Z_METADATA = 3;
 	
-	/** Setting this to true will call the method to set blocks with notify which causes block updates */
+	/** Setting this to true will call the method to set blocks with notify which causes block updates, might cause more lag */
 	public boolean causeBlockUpdates = true;
 	
 	/**
@@ -196,9 +196,9 @@ public abstract class Tree {
 	public int treeTrunkFillerMetadata = 0;
 	
 	/** What kind of blocks should stop roots*/
-	public int[] treeRootStoppingBlocks = new int[]{ 1,7 };
+	public int[] treeRootStoppingBlocks = new int[]{1,7};
 	/** What kind of blocks should stop branches (leave empty to skip check)*/
-	public int[] treeBranchStoppingBlocks = new int[]{}; //currently broken.
+	public int[] treeBranchStoppingBlocks = new int[]{1, 4, 7, 20}; //still not sure if this works as intended...
 	
 	public Tree() {
 		this.pos = new int[] { 0, 0, 0 };

@@ -17,7 +17,7 @@ public class CustomRoundTree extends RoundTree {
 		super.prepare();
 		this.foliageShape = new double[] {2, 3,3,3, 2};
 		this.branchSlope = 0.381D;
-		this.trunkHeight = this.height * 0.618D;
+		//this.trunkHeight = this.height * 0.618D; //not quite sure
 	}
 
 }

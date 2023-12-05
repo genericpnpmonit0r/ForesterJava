@@ -2,8 +2,6 @@ package forester;
 
 import java.util.Random;
 
-import net.minecraft.src.Block;
-
 /**
  * This class contains only static utility methods to use in the various tree
  * classes, the tree options and the tree getter can be found in {@link forester.Tree}
@@ -112,51 +110,41 @@ public class Forester {
 		return src[rnd.nextInt(src.length)];
 	}
 
-	/* original code for the loop was curcord = [i + .5 for i in cord] */
-	public static int distToMat(int[] cord, int[] vec, int[] matidxlist, MCWorldAccessor mcmap, boolean invert, Integer limit) {
-		double[] curcord = { 0, 0, 0 };
-		for (int i = 0; i < cord.length; i++) { //not sure if correct
-			curcord[i] = cord[i] + .5;
-		}
-
+	public static int distToMat(int[] cord, int[] vec, int[] matidxlist, MCWorldAccessor mcmap, boolean invert, int limit) {
+//		System.out.println("cord: "+Arrays.toString(cord));
+//		System.out.println("vec: "+Arrays.toString(vec));
+//		System.out.println("matidxlist: "+Arrays.toString(matidxlist));
 		int iterations = 0;
 		boolean on_map = true;
 
 		while (on_map) {
-			int x = (int) curcord[0];
-			int y = (int) curcord[1];
-			int z = (int) curcord[2];
-			Block block = Block.blocksList[mcmap.getBlockId(x, y, z)];
+			int blockID = mcmap.getBlockId(cord[0], cord[1], cord[2]);
 
-			if (block == null) {
+			if (arrayContains(matidxlist, blockID) && !invert) {
+				break;
+			} else if (!arrayContains(matidxlist, blockID) && invert) {
 				break;
 			} else {
-				int blockID = block.blockID;
-
-				if (arrayContains(matidxlist, blockID) && !invert) {
-					break;
-				} else if (!arrayContains(matidxlist, blockID) && invert) {
-					break;
-				} else {
-					for (int i = 0; i < 3; i++) {
-						curcord[i] = curcord[i] + vec[i];
-					}
-					iterations++;
+				for (int i = 0; i < 3; i++) {
+					cord[i] = cord[i] + vec[i];
 				}
+//				System.out.println("cord(itr): "+Arrays.toString(cord));
+				iterations++;
 			}
 
-			if (limit != null && iterations > limit) {
+			if (iterations > limit) {
 				break;
 			}
 		}
-
+//		System.out.println("iteration count is "+ iterations);
 		return iterations;
 	}
 
 	public static boolean arrayContains(int[] array, int key) {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] == key)
+			if (array[i] == key) {
 				return true;
+			}
 		}
 		return false;
 	}

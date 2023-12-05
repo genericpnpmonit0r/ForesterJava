@@ -193,8 +193,7 @@ public abstract class ProceduralTree extends Tree {
 			double endsize = 1.0;
 
 			if (this.treeRoots == TreeRoots.TO_STONE || this.treeRoots == TreeRoots.HANGING) {
-				int offlength = (int) (Math
-						.sqrt(Math.pow(offset[0], 2) + Math.pow(offset[1], 2) + Math.pow(offset[2], 2)));
+				int offlength = (int) (Math.sqrt(Math.pow(offset[0], 2) + Math.pow(offset[1], 2) + Math.pow(offset[2], 2)));
 				if (offlength < 1) {
 					continue;
 				}
