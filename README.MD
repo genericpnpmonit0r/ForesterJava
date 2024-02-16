@@ -8,9 +8,8 @@ The Minecraft forester script ported to Java
 4. Click on Link Source > Browse
 5. Select the `sources` folder from the repository you cloned
 6. Click Next > Finish
-7. Open net.minecraft.src.World and add `forester.MCWorldAccessor` interface to the list of implementations
+7. Open net.minecraft.src.World and add `forester.MCLevel` interface to the list of implementations
 
-8. Then you should be able to call the generateTree method from Tree.java
-9. to be able to reobf with these classes you would need to copy the contents of sources/ to src/minecraft/
+8. to be able to reobf with these classes you would need to copy the contents of sources/ to src/minecraft/
 
 See example.java for details on basic instructions how to use the code
