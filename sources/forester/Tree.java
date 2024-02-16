@@ -3,7 +3,7 @@ package forester;
 import java.util.Random;
 
 /** The base class for all Forester trees. */
-public abstract class Tree /*extends WorldGenerator */ implements FeatureAdaptor {
+public abstract class Tree {
 	/** Random number generator, this is used instead of Math.random() to be able to set the seed used by the RNG */
 	protected final Random random = new Random();
 	/** MC world equivalent */
@@ -312,8 +312,7 @@ public abstract class Tree /*extends WorldGenerator */ implements FeatureAdaptor
 		}
 	}
 	
-	@Override
-	public boolean generate(MCLevel /*World*/ level, Random random, int x, int y, int z) {
+	public boolean generate(MCLevel level, Random random, int x, int y, int z) {
 		this.mcmap = level;
 		this.random.setSeed(random.nextLong());
 		
@@ -342,11 +341,6 @@ public abstract class Tree /*extends WorldGenerator */ implements FeatureAdaptor
 		}
 		
 		return true;
-	}
-	
-	@Override
-	public void setCausesBlockUpdates(boolean b) {
-		this.causeBlockUpdates = b;
 	}
 	
 	@Override

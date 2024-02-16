@@ -4,157 +4,157 @@ package forester;
  * Use this Builder class to create static instances of trees for future use
  */
 public class TreeBuilder {
-	private final Tree t;
+	private final Tree tree;
 	
 	public TreeBuilder(Class<? extends Tree> tc) {
 		try {
-			t = tc.getConstructor().newInstance();
+			tree = tc.getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot instantiate tree class "+tc.getSimpleName(), e);
 		}
 	}
 	
 	public TreeBuilder withFixedHeight(int fixedH) {
-		t.height = fixedH;
+		tree.height = fixedH;
 		return this;
 	}
 
 	public TreeBuilder withHeightVariance(int heightV) {
-		t.randomHeightVariance = heightV;
+		tree.randomHeightVariance = heightV;
 		return this;
 	}
 
 	public TreeBuilder withLogRot(boolean useLogRot) {
-		t.useLogRot = useLogRot;
+		tree.useLogRot = useLogRot;
 		return this;
 	}
 
 	public TreeBuilder withLogRotXMeta(int xmeta) {
-		t.logRotXMetadata = xmeta;
+		tree.logRotXMetadata = xmeta;
 		return this;
 	}
 
 	public TreeBuilder withLogRotZMeta(int zmeta) {
-		t.logRotZMetadata = zmeta;
+		tree.logRotZMetadata = zmeta;
 		return this;
 	}
 
 	public TreeBuilder withBlockUpdates(boolean blockUpdates) {
-		t.causeBlockUpdates = blockUpdates;
+		tree.causeBlockUpdates = blockUpdates;
 		return this;
 	}
 
 	public TreeBuilder withEdgeHeight(int edgeHeight) {
-		t.treeEdgeHeight = edgeHeight;
+		tree.treeEdgeHeight = edgeHeight;
 		return this;
 	}
 
 	public TreeBuilder withWood(boolean wood) {
-		t.treeWood = wood;
+		tree.treeWood = wood;
 		return this;
 	}
 
 	public TreeBuilder withTrunkThickness(double thickness) {
-		t.treeTrunkThickness = thickness;
+		tree.treeTrunkThickness = thickness;
 		return this;
 	}
 
 	public TreeBuilder withTrunkHeight(double height) {
-		t.treeTrunkHeight = height;
+		tree.treeTrunkHeight = height;
 		return this;
 	}
 
 	public TreeBuilder withHollowTrunk(boolean hollow) {
-		t.treeHollowTrunk = hollow;
+		tree.treeHollowTrunk = hollow;
 		return this;
 	}
 
 	public TreeBuilder withBrokenTrunk(boolean broken) {
-		t.treeBrokenTrunk = broken;
+		tree.treeBrokenTrunk = broken;
 		return this;
 	}
 
 	public TreeBuilder withBranchDensity(double density) {
-		t.treeBranchDensity = density;
+		tree.treeBranchDensity = density;
 		return this;
 	}
 
 	public TreeBuilder withRoots(TreeRoots roots) {
-		t.treeRoots = roots;
+		tree.treeRoots = roots;
 		return this;
 	}
 
 	public TreeBuilder withRootButtresses(boolean buttresses) {
-		t.treeRootButtresses = buttresses;
+		tree.treeRootButtresses = buttresses;
 		return this;
 	}
 
 	public TreeBuilder withFoliage(boolean foliage) {
-		t.treeFoliage = foliage;
+		tree.treeFoliage = foliage;
 		return this;
 	}
 
 	public TreeBuilder withFoliageDensity(double density) {
-		t.treeFoliageDensity = density;
+		tree.treeFoliageDensity = density;
 		return this;
 	}
 
 	public TreeBuilder withLights(int lights) {
-		t.treeLights = lights;
+		tree.treeLights = lights;
 		return this;
 	}
 
 	public TreeBuilder withWoodBlock(int woodBlockId) {
-		t.treeWoodBlock = woodBlockId;
+		tree.treeWoodBlock = woodBlockId;
 		return this;
 	}
 
 	public TreeBuilder withWoodMeta(int woodBlockMeta) {
-		t.treeWoodMetadata = woodBlockMeta;
+		tree.treeWoodMetadata = woodBlockMeta;
 		return this;
 	}
 
 	public TreeBuilder withLeafBlock(int leafBlockId) {
-		t.treeLeafBlock = leafBlockId;
+		tree.treeLeafBlock = leafBlockId;
 		return this;
 	}
 
 	public TreeBuilder withLeafMeta(int leafBlockMeta) {
-		t.treeLeafMetadata = leafBlockMeta;
+		tree.treeLeafMetadata = leafBlockMeta;
 		return this;
 	}
 
 	public TreeBuilder withTreeLightBlock(int lightBlockId) {
-		t.treeLightingBlock = lightBlockId;
+		tree.treeLightingBlock = lightBlockId;
 		return this;
 	}
 
 	public TreeBuilder withTreeLightMeta(int lightBlockMeta) {
-		t.treeLightingMetadata = lightBlockMeta;
+		tree.treeLightingMetadata = lightBlockMeta;
 		return this;
 	}
 
 	public TreeBuilder withTrunkFillerBlock(int fillerBlockId) {
-		t.treeTrunkFillerBlock = fillerBlockId;
+		tree.treeTrunkFillerBlock = fillerBlockId;
 		return this;
 	}
 
 	public TreeBuilder withTrunkFillerMeta(int fillerBlockMeta) {
-		t.treeTrunkFillerMetadata = fillerBlockMeta;
+		tree.treeTrunkFillerMetadata = fillerBlockMeta;
 		return this;
 	}
 
 	public TreeBuilder withRootStoppingBlocks(int... rootStopBlocks) {
-		t.treeRootStoppingBlocks = rootStopBlocks;
+		tree.treeRootStoppingBlocks = rootStopBlocks;
 		return this;
 	}
 
 	public TreeBuilder withBranchStoppingBlocks(int... brStopBlocks) {
-		t.treeBranchStoppingBlocks = brStopBlocks;
+		tree.treeBranchStoppingBlocks = brStopBlocks;
 		return this;
 	}
 	
 	public Tree build() {
-		return t;
+		return tree;
 	}
 }
