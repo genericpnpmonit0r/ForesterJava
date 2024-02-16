@@ -154,6 +154,11 @@ public class TreeBuilder {
 		return this;
 	}
 	
+	public TreeBuilder withPlantOnBlocks(int... plantOnBlocks) {
+		tree.plantOnBlocks = plantOnBlocks;
+		return this;
+	}
+	
 	public Tree build() {
 		return tree;
 	}

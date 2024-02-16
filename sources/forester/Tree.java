@@ -199,6 +199,8 @@ public abstract class Tree {
 	public int[] treeRootStoppingBlocks = new int[]{1,7};
 	/** What kind of blocks should stop branches (leave empty to skip check)*/
 	public int[] treeBranchStoppingBlocks = new int[]{1, 4, 7, 20}; //still not sure if this works as intended...
+	/** What kind of blocks should the trees be planted on */
+	public int[] plantOnBlocks = new int[] {2,3};
 	
 	protected Tree() {
 		this.pos = new int[] { 0, 0, 0 };
@@ -251,7 +253,7 @@ public abstract class Tree {
 		int[] start = { this.pos[0], this.pos[1], this.pos[2] };
 		int[] end = { this.pos[0], this.pos[1] + this.height - 1, this.pos[2] };
 		int mat = this.mcmap.getBlockId(this.pos[0], this.pos[1] - 1, this.pos[2]);
-		if(mat != 2 && mat != 3) {
+		if(!Forester.arrayContains(plantOnBlocks, mat)) {
 			return false;
 		} else {
 			int allowedHeight = checkLine(start, end);
@@ -308,6 +310,7 @@ public abstract class Tree {
 			if(primoffset == endoffset) {
 				return -1;
 			}
+			
 			return Math.abs(primoffset);
 		}
 	}
