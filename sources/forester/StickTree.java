@@ -5,11 +5,11 @@ package forester;
  * Designed for sub-classing.  Only makes the trunk.
  */
 public abstract class StickTree extends Tree {
-	public StickTree() {
+	protected StickTree() {
 	}
 
 	@Override
-	public void makeTrunk() {
+	protected void makeTrunk() {
 		int x = this.pos[0];
 		int y = this.pos[1];
 		int z = this.pos[2];

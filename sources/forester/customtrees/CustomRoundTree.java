@@ -1,6 +1,5 @@
 package forester.customtrees;
 
-import forester.MCWorldAccessor;
 import forester.RoundTree;
 
 /**
@@ -8,8 +7,8 @@ import forester.RoundTree;
  */
 public class CustomRoundTree extends RoundTree {
 
-	public CustomRoundTree(MCWorldAccessor mcmap) {
-		super(mcmap);
+	public CustomRoundTree() {
+		super();
 	}
 	
 	@Override

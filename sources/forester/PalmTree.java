@@ -1,7 +1,7 @@
 package forester;
 
 public class PalmTree extends StickTree {
-	public PalmTree(MCWorldAccessor mcmap) {
+	public PalmTree(MCLevel mcmap) {
 		this.mcmap = mcmap;
 	}
 
@@ -10,7 +10,7 @@ public class PalmTree extends StickTree {
 	 * Make foliage stick out in four directions from the top of the trunk.
 	 */
 	@Override
-	public void makeFoliage() {
+	protected void makeFoliage() {
 		int y = this.pos[1] + this.height;
 		for (int xoff = -2; xoff < 3; xoff++) {
 			for (int zoff = -2; zoff < 3; zoff++) {

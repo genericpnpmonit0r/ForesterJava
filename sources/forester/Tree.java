@@ -3,37 +3,40 @@ package forester;
 import java.util.Random;
 
 /** The base class for all Forester trees. */
-public abstract class Tree {
+public abstract class Tree /*extends WorldGenerator */ implements FeatureAdaptor {
 	/** Random number generator, this is used instead of Math.random() to be able to set the seed used by the RNG */
 	protected final Random random = new Random();
 	/** MC world equivalent */
-	protected MCWorldAccessor mcmap;
+	protected MCLevel mcmap;
 	/** Contains tree x y z coordinates [0] = x, [1] = y, [2] = z*/
 	public int[] pos;
 	/** Tree height*/
 	public int height;
 	
-	/*Static options for tree block rotation metadata on procedural trees*/
+	public int randomHeightVariance = 12;
+	
+	/*Options for tree block rotation metadata on procedural trees*/
 	/** Set this to true for later MC versions like release 1.3*/
-	protected static final boolean USE_LOG_ROTATION = false;
-	protected static final int LOG_ROT_X_METADATA = 2;
-	protected static final int LOG_ROT_Z_METADATA = 3;
+	public boolean useLogRot = false;
+	public int logRotXMetadata = 2;
+	public int logRotZMetadata = 3;
 	
 	/** Setting this to true will call the method to set blocks with notify which causes block updates, might cause more lag */
 	public boolean causeBlockUpdates = true;
 	
-	/**
-	 * Which shapes would you like the trees to be? these first three are best suited for small heights, from 5 - 10<br>
-	 * <br>
-	 * NORMAL is the normal minecraft shape, it only gets taller and shorter<br>
-	 * BAMBOO a trunk with foliage, it only gets taller and shorter<br>
-	 * PALM a trunk with a fan at the top, only gets taller and shorter, these last four are best suited for very large trees, heights greater than 8<br>
-	 * ROUND procedural spherical shaped tree, can scale up to immense size<br>
-	 * CONE procedural, like a pine tree, also can scale up to immense size<br>
-	 * RAINFOREST many slender trees, most at the lower range of the height, with a few at the upper end.<br>
-	 * MANGROVE makes mangrove trees.<br>
-	 */
-	protected TreeShape treeShape = TreeShape.ROUND; //protected cause automatically set by getTree()
+//	/**
+//	 * Which shapes would you like the trees to be? these first three are best suited for small heights, from 5 - 10<br>
+//	 * <br>
+//	 * NORMAL is the normal minecraft shape, it only gets taller and shorter<br>
+//	 * BAMBOO a trunk with foliage, it only gets taller and shorter<br>
+//	 * PALM a trunk with a fan at the top, only gets taller and shorter, these last four are best suited for very large trees, heights greater than 8<br>
+//	 * ROUND procedural spherical shaped tree, can scale up to immense size<br>
+//	 * CONE procedural, like a pine tree, also can scale up to immense size<br>
+//	 * RAINFOREST many slender trees, most at the lower range of the height, with a few at the upper end.<br>
+//	 * MANGROVE makes mangrove trees.<br>
+//	 */
+//	@Deprecated
+//	protected TreeShape treeShape = TreeShape.ROUND; //protected cause automatically set by getTree()
 	
 	/**
 	 * EDGEHEIGHT is the height at the trees at the edge of the area.<br>
@@ -168,9 +171,6 @@ public abstract class Tree {
 	 */
 	public int treeLights = 0;
 	
-	/** World max height, change to 255 in MC 1.2.5 or above */
-	public int worldMaxHeight = 127;
-	
 	/** What block id should the trunk be made out of */
 	public int treeWoodBlock = 17;
 	
@@ -200,23 +200,25 @@ public abstract class Tree {
 	/** What kind of blocks should stop branches (leave empty to skip check)*/
 	public int[] treeBranchStoppingBlocks = new int[]{1, 4, 7, 20}; //still not sure if this works as intended...
 	
-	public Tree() {
+	protected Tree() {
 		this.pos = new int[] { 0, 0, 0 };
-		this.height = 1;
 	}
 	
-	/** Make sure the parameters are not out of range to prevent out of bounds stuff, should be called before anything below */
-	private void checkParameters() {
-		if (treeShape == null) treeShape = TreeShape.ROUND;
-		if (treeEdgeHeight < 1) treeEdgeHeight = 1;
-		if (treeTrunkThickness < 0.0D) treeTrunkThickness = 0.0D;
-		if (treeTrunkHeight < 0.0D) treeTrunkHeight = 0.0D;
-		if (treeRoots == null) treeRoots = TreeRoots.NO;
-		if (treeFoliageDensity < 0.0D) treeFoliageDensity = 0.0D;
-		if (treeBranchDensity < 0.0D) treeBranchDensity = 0.0D;
-		if (treeLights < 0 || treeLights > 4) treeLights = 0;
-	}
+	/**
+	 * Initialize the internal values for the Tree object.
+	 */
+	protected void prepare() {}
 
+	/**
+	 * Generate the trunk and enter it in mcmap.
+	 */
+	protected abstract void makeTrunk();
+
+	/**
+	 * Generate the foliage and enter it in mcmap. Note, foliage will disintegrate if there is no log nearby
+	 */
+	protected abstract void makeFoliage();
+	
 	/**
 	 * Sets a block id and metadata at the specified coordinates, note that this.mcmap must be set and not null!
 	 * @param x x coordinate
@@ -234,65 +236,121 @@ public abstract class Tree {
 		
 	}
 	
-	/**
-	 * Initialize the internal values for the Tree object.
-	 */
-	public void prepare() {}
+	/** Make sure the parameters are not out of range to prevent out of bounds stuff, should be called before anything below */
+	private void checkParameters() {
+		if (treeEdgeHeight < 1) treeEdgeHeight = 1;
+		if (treeTrunkThickness < 0.0D) treeTrunkThickness = 0.0D;
+		if (treeTrunkHeight < 0.0D) treeTrunkHeight = 0.0D;
+		if (treeRoots == null) treeRoots = TreeRoots.NO;
+		if (treeFoliageDensity < 0.0D) treeFoliageDensity = 0.0D;
+		if (treeBranchDensity < 0.0D) treeBranchDensity = 0.0D;
+		if (treeLights < 0 || treeLights > 4) treeLights = 0;
+	}
+	
+	private boolean validPos() {
+		int[] start = { this.pos[0], this.pos[1], this.pos[2] };
+		int[] end = { this.pos[0], this.pos[1] + this.height - 1, this.pos[2] };
+		int mat = this.mcmap.getBlockId(this.pos[0], this.pos[1] - 1, this.pos[2]);
+		if(mat != 2 && mat != 3) {
+			return false;
+		} else {
+			int allowedHeight = checkLine(start, end);
+			if(allowedHeight == -1) {
+				return true;
+			} else if(allowedHeight < 6) {
+				return false;
+			} else {
+				this.height = allowedHeight;
+				return true;
+			}
+		}
+	}
 
-	/**
-	 * Generate the trunk and enter it in mcmap.
-	 */
-	public abstract void makeTrunk();
+	private int checkLine(int[] start, int[] end) {
+		int[] delta = {0, 0, 0};
 
-	/**
-	 * Generate the foliage and enter it in mcmap. Note, foliage will disintegrate if there is no log nearby
-	 */
-	public abstract void makeFoliage();
+		for(int idx = 0; idx < 3; ++idx) {
+			delta[idx] = end[idx] - start[idx];
+		}
+		
+		int maxdist = Forester.maxKeyAbs(delta);
+		int primidx = Forester.getArrayIndex(delta, maxdist);
 
+		if(delta[primidx] == 0) {
+			return -1;
+		} else {
+			int secidx1 = Forester.getOtherIndexes(delta, primidx)[0];
+			int secidx2 = Forester.getOtherIndexes(delta, primidx)[1];
+			int primsign;
+			if(delta[primidx] > 0) {
+				primsign = 1;
+			} else {
+				primsign = -1;
+			}
+
+			double secfac1 = (double)delta[secidx1] / (double)delta[primidx];
+			double secfac2 = (double)delta[secidx2] / (double)delta[primidx];
+			int[] coord = {0, 0, 0};
+			int primoffset = 0;
+			int endoffset = delta[primidx] + primsign;
+			for(; primoffset != endoffset; primoffset += primsign) {
+				
+				coord[primidx] = start[primidx] + primoffset;
+				coord[secidx1] = (int)Math.floor(start[secidx1] + primoffset * secfac1);
+				coord[secidx2] = (int)Math.floor(start[secidx2] + primoffset * secfac2);
+				
+				int mat = this.mcmap.getBlockId(coord[0], coord[1], coord[2]);
+				if(mat != 0 && mat != 18) {
+					break;
+				}
+			}
+			
+			if(primoffset == endoffset) {
+				return -1;
+			}
+			return Math.abs(primoffset);
+		}
+	}
+	
+	@Override
+	public boolean generate(MCLevel /*World*/ level, Random random, int x, int y, int z) {
+		this.mcmap = level;
+		this.random.setSeed(random.nextLong());
+		
+		this.pos[0] = x;
+		this.pos[1] = y;
+		this.pos[2] = z;
+		
+		if(this.height == 0) {
+			this.height = 25 + this.random.nextInt(this.randomHeightVariance);
+		}
+		
+		if(!this.validPos()) {
+			return false;
+		}
+		
+		this.checkParameters();
+		
+		this.prepare();
+		
+		if(this.treeFoliage) {
+			this.makeFoliage();
+		}
+		
+		if(this.treeWood) {
+			this.makeTrunk();
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public void setCausesBlockUpdates(boolean b) {
+		this.causeBlockUpdates = b;
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("Tree{pos=(%d,%d,%d),height=%d,type=%s}", 
-				this.pos[0], this.pos[1], this.pos[2], this.height, this.getClass().getSimpleName());
-	}
-	
-	public void setTreeSeed(long seed) {
-		this.random.setSeed(seed);
-	}
-	
-	/**
-	 * Sets the tree shape and returns it
-	 * @param mcmap world
-	 * @param shape tree shape
-	 * @return the tree object
-	 */
-	public static Tree getTree(MCWorldAccessor mcmap, TreeShape shape) {
-		Tree tree = null;
-		switch (shape) {
-			case NORMAL: tree = new NormalTree(mcmap); break;
-			case BAMBOO: tree =  new BambooTree(mcmap); break;
-			case PALM: tree = new PalmTree(mcmap); break;
-			case ROUND: tree = new RoundTree(mcmap); break;
-			case CONE: tree =  new ConeTree(mcmap); break;
-			case RAINFOREST: tree = new RainforestTree(mcmap); break;
-			case MANGROVE: tree = new MangroveTree(mcmap); break;
-			default: return null;
-		}
-		tree.treeShape = shape; //set shape here as well so its in sync so you don't get weird results
-		return tree;
-	}
-	
-	public static void generateTree(int x, int y, int z, int height, Tree tree) {
-		tree.height = height;
-		tree.pos[0] = x;
-		tree.pos[1] = y;
-		tree.pos[2] = z;
-		tree.checkParameters();
-		tree.prepare();
-		if(tree.treeFoliage) {
-			tree.makeFoliage();
-		}
-		if(tree.treeWood) {
-			tree.makeTrunk();
-		}
+		return String.format("Tree{pos=(%d,%d,%d),height=%d,type=%s}", this.pos[0], this.pos[1], this.pos[2], this.height, this.getClass().getSimpleName());
 	}
 }

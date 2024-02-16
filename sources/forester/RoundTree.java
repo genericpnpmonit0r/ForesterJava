@@ -1,12 +1,12 @@
 package forester;
 
 public class RoundTree extends ProceduralTree {
-	public RoundTree(MCWorldAccessor mcmap) {
-		super(mcmap);
+	public RoundTree() {
+		super();
 	}
 
 	@Override
-	public void prepare() {
+	protected void prepare() {
 		this.branchSlope = 0.382;
 		super.prepare();
 		this.foliageShape = new double[] { 2, 3, 3, 2.5, 1.6 };

@@ -6,7 +6,7 @@ package forester;
  * This shape is very similar to the default Minecraft tree.
  */
 public class NormalTree extends StickTree {
-	public NormalTree(MCWorldAccessor mcmap) {
+	public NormalTree(MCLevel mcmap) {
 		this.mcmap = mcmap;
 	}
 
@@ -15,7 +15,7 @@ public class NormalTree extends StickTree {
 	 * if there is no "log" block within range 2 (square) at the same level or one level below
 	 */
 	@Override
-	public void makeFoliage() {
+	protected void makeFoliage() {
 		int topy = this.pos[1] + this.height - 1;
 		int start = topy - 2;
 		int end = topy + 2;

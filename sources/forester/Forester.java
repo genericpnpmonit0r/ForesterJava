@@ -10,7 +10,7 @@ public class Forester {
 	private Forester() { //static methods only.
 	}
 
-	public static int[] range(int start, int end, int step) { // use only if needed, for maximum speed use a normal for loop
+	public static int[] range(int start, int end, int step) { // use only if needed, for maximum speed use a normal for loop, since this instantiates new objects in a loop
 		int[] tbl = {};
 		int[] temp = null;
 
@@ -32,24 +32,6 @@ public class Forester {
 
 		return tbl;
 	}
-
-	/*
-	public static Integer[] rangeBoxed(int start, int end, int step) {
-		ArrayList<Integer> ints = new ArrayList<>();
-
-		if (step < 0) {
-			for (int i = start; i > end; i += step) {
-				ints.add(i);
-			}
-		} else {
-			for (int i = start; i < end; i += step) {
-				ints.add(i);
-			}
-		}
-
-		return ints.toArray(new Integer[0]);
-	}
-	*/
 
 	public static int maxKeyAbs(int[] arr) {
 		int biggestABSValueSoFar = 0;
@@ -110,10 +92,7 @@ public class Forester {
 		return src[rnd.nextInt(src.length)];
 	}
 
-	public static int distToMat(int[] cord, int[] vec, int[] matidxlist, MCWorldAccessor mcmap, boolean invert, int limit) {
-//		System.out.println("cord: "+Arrays.toString(cord));
-//		System.out.println("vec: "+Arrays.toString(vec));
-//		System.out.println("matidxlist: "+Arrays.toString(matidxlist));
+	public static int distToMat(int[] cord, int[] vec, int[] matidxlist, MCLevel mcmap, boolean invert, int limit) {
 		int iterations = 0;
 		boolean on_map = true;
 
@@ -128,7 +107,6 @@ public class Forester {
 				for (int i = 0; i < 3; i++) {
 					cord[i] = cord[i] + vec[i];
 				}
-//				System.out.println("cord(itr): "+Arrays.toString(cord));
 				iterations++;
 			}
 
@@ -136,7 +114,7 @@ public class Forester {
 				break;
 			}
 		}
-//		System.out.println("iteration count is "+ iterations);
+		
 		return iterations;
 	}
 
@@ -148,20 +126,4 @@ public class Forester {
 		}
 		return false;
 	}
-	
-	//debug entry point to test range() impl
-	/*
-	public static void main(String[] args) {
-		final int start = 20;
-		final int end = 0;
-		final int step = -1;
-		
-		int[] unboxed = range(start,end,step);
-		
-		Integer[] boxed = rangeBoxed(start,end,step);
-		
-		System.out.println("unbox: "+Arrays.toString(unboxed));
-		System.out.println("boxed: "+Arrays.toString(boxed));
-	}
-	*/
 }

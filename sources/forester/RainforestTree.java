@@ -2,12 +2,12 @@ package forester;
 
 public class RainforestTree extends ProceduralTree {
 
-	public RainforestTree(MCWorldAccessor mcmap) {
-		super(mcmap);
+	public RainforestTree() {
+		super();
 	}
 
 	@Override
-	public void prepare() {
+	protected void prepare() {
 		this.foliageShape = new double[] { 3.4, 2.6 };
 		this.branchSlope = 1.0;
 		super.prepare();

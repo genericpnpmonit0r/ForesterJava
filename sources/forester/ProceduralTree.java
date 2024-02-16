@@ -12,14 +12,12 @@ import java.util.ArrayList;
 public abstract class ProceduralTree extends Tree {
 	protected double trunkHeight;
 	protected double[] foliageShape;
-	private ArrayList<int[]> foliageCoords;
+	protected ArrayList<int[]> foliageCoords;
 	protected double trunkRadius;
 	protected double branchDensity;
 	protected double branchSlope;
 	
-	public ProceduralTree(MCWorldAccessor mcmap) {
-		this.mcmap = mcmap;
-	}
+	protected ProceduralTree() {}
 
 	/**
 	 * Create a round section of type matidx in mcmap.
@@ -32,7 +30,7 @@ public abstract class ProceduralTree extends Tree {
 	 * @param blockID the integer value to make the section out of
 	 * @param metadata the integer value to make the metadata of the section out of
 	 */
-	private void crossSection(int x, int y, int z, double radius, int dirAxis, int blockID, int metadata) {
+	protected void crossSection(int x, int y, int z, double radius, int dirAxis, int blockID, int metadata) {
 		int rad = (int) (radius + .618D);
 		if (rad <= 0) return;
 		int[] coord = { 0, 0, 0 };
@@ -80,7 +78,7 @@ public abstract class ProceduralTree extends Tree {
 	 * @param y y coordinate
 	 * @param z z coordinate
 	 */
-	private void foliageCluster(int x, int y, int z) {
+	protected void foliageCluster(int x, int y, int z) {
 		double[] level_radius = this.foliageShape;
 		
 		for (double i : level_radius) {
@@ -99,7 +97,7 @@ public abstract class ProceduralTree extends Tree {
      * @param blockID block id
      * @param metadata block metadata
 	 */
-	private void taperedCylinder(int[] start, int[] end, double startSize, double endSize, int blockID, int metadata) {
+	protected void taperedCylinder(int[] start, int[] end, double startSize, double endSize, int blockID, int metadata) {
 		int[] delta = { 0, 0, 0 };
 		for (int i = 0; i < 3; i++) {
 			delta[i] = end[i] - start[i];
@@ -128,7 +126,7 @@ public abstract class ProceduralTree extends Tree {
 			coord[primidx] = primloc;
 			coord[secidx1] = secloc1;
 			coord[secidx2] = secloc2;
-			if(USE_LOG_ROTATION) {
+			if(useLogRot) {
 				metadata = logRotation(coord, start);
 			}
 			
@@ -143,7 +141,7 @@ public abstract class ProceduralTree extends Tree {
 	 * <br>
 	 * @param rootBases [[x,z,base_radius], ...] and is the list of locations<br> the roots can originate from, and the size of that location.<br>
 	 */
-	private void makeRoots(ArrayList<double[]> rootBases) {
+	protected void makeRoots(ArrayList<double[]> rootBases) {
 		int[] treeposition = this.pos;
 		int height = this.height;
 
@@ -174,7 +172,7 @@ public abstract class ProceduralTree extends Tree {
 				offset[i] = startcoord[i] - coord[i];
 			}
 
-			if (this.treeShape == TreeShape.MANGROVE) {
+			if (this instanceof MangroveTree) {
 				for (i = 0; i < 3; i++) {
 					offset[i] = (int) (offset[i] * 1.618 - 1.5);
 				}
@@ -239,7 +237,7 @@ public abstract class ProceduralTree extends Tree {
 	}
 
 	/** Generate the branches and enter them in mcmap. */
-	private void makeBranches() {
+	protected void makeBranches() {
 		int[] treeposition = this.pos;
 		int height = this.height;
 		int topy = treeposition[1] + (int) (this.trunkHeight + 0.5);
@@ -250,8 +248,7 @@ public abstract class ProceduralTree extends Tree {
 		}
 
 		for (int[] coord : this.foliageCoords) {
-			double dist = Math
-					.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
+			double dist = Math.sqrt(Math.pow(coord[0] - treeposition[0], 2) + Math.pow(coord[2] - treeposition[2], 2));
 			int ydist = coord[1] - treeposition[1];
 			double value = (this.branchDensity * 220 * height) / Math.pow((ydist + dist), 3);
 			if (value < random.nextDouble()) {
@@ -288,10 +285,33 @@ public abstract class ProceduralTree extends Tree {
 			this.taperedCylinder(startcoord, coord, startsize, endsize, this.treeWoodBlock, this.treeWoodMetadata);
 		}
 	}
+	
+	/**
+	 * Experimental log x/z rotation
+	 * @param coord x y z array
+	 * @param start starting coord
+	 * @return rotation metadata
+	 */
+	protected int logRotation(int[] coord, int[] start) {
+		int dir = 0;
+		int xdiff = Math.abs(coord[0] - start[0]);
+		int zdiff = Math.abs(coord[2] - start[2]);
+		int maxdiff = Math.max(xdiff, zdiff);
+		
+		if(maxdiff > 0) {
+			if(xdiff == maxdiff) {
+				dir = this.logRotXMetadata;
+			} else {
+				dir = this.logRotZMetadata;
+			}
+		}
+		
+		return dir;
+	}
 
 	/** Initialize the internal values for the Tree object. Primarily, sets up the foliage cluster locations.*/
 	@Override
-	public void prepare() {
+	protected void prepare() {
 		int[] treeposition = this.pos;
 		this.trunkRadius = .618 * Math.sqrt(this.height * this.treeTrunkThickness);
 		int yend;
@@ -317,11 +337,11 @@ public abstract class ProceduralTree extends Tree {
 			num_of_clusters_per_y = 1;
 		}
 
-		if (yend > this.worldMaxHeight)
-			yend = this.worldMaxHeight;
-		if (ystart > this.worldMaxHeight)
-			ystart = this.worldMaxHeight;
-		//Forester.range(yend, ystart, -1)
+		if (yend > this.mcmap.getHeight())
+			yend = this.mcmap.getHeight();
+		if (ystart > this.mcmap.getHeight())
+			ystart = this.mcmap.getHeight();
+		
 		for (int y = yend; y > ystart; y--) {
 			for (int i = 0; i < num_of_clusters_per_y; i++) {
 				double shapefac = this.shapeFunc(y - ystart);
@@ -374,7 +394,7 @@ public abstract class ProceduralTree extends Tree {
 	 * if there is no "log" block within range 2 (square) at the same level or one level below
 	 */
 	@Override
-	public void makeFoliage() {
+	protected void makeFoliage() {
 		ArrayList<int[]> foliage_coords = this.foliageCoords;
 		for (int[] coord : foliage_coords) {
 			this.foliageCluster(coord[0], coord[1], coord[2]);
@@ -397,7 +417,7 @@ public abstract class ProceduralTree extends Tree {
 
 	/** Generate the trunk, roots, and branches in mcmap. */
 	@Override
-	public void makeTrunk() {
+	protected void makeTrunk() {
 		int height = this.height;
 		double trunkheight = this.trunkHeight;
 		double trunkradius = this.trunkRadius;
@@ -420,14 +440,14 @@ public abstract class ProceduralTree extends Tree {
 		double startrad;
 		int i;
 		
-		if (this.treeRootButtresses || this.treeShape == TreeShape.MANGROVE) {
+		if (this.treeRootButtresses || this instanceof MangroveTree) {
 			startrad = trunkradius * .8;
 			rootbases.add(new double[] {x, z, startrad});
 			double buttress_radius = trunkradius * 0.382;
 			double posradius = trunkradius;
 			int num_of_buttresses = (int) (Math.sqrt(trunkradius) + 3.5);
 
-			if (this.treeShape == TreeShape.MANGROVE) {
+			if (this instanceof MangroveTree) {
 				posradius = posradius * 2.618;
 			}
 
@@ -443,8 +463,7 @@ public abstract class ProceduralTree extends Tree {
 					thisbuttressradius = 1.0;
 				}
 
-				this.taperedCylinder(new int[] { thisx, starty, thisz }, new int[] { x, midy, z },
-						thisbuttressradius, thisbuttressradius, this.treeWoodBlock, this.treeWoodMetadata);
+				this.taperedCylinder(new int[] { thisx, starty, thisz }, new int[] { x, midy, z }, thisbuttressradius, thisbuttressradius, this.treeWoodBlock, this.treeWoodMetadata);
 				rootbases.add(new double[] {thisx, thisz, thisbuttressradius});
 			}
 
@@ -453,9 +472,7 @@ public abstract class ProceduralTree extends Tree {
 			rootbases.add(new double[] {x, z, startrad});
 		}
 
-		this.taperedCylinder(new int[] { x, starty, z }, new int[] { x, midy, z }, startrad, midrad, this.treeWoodBlock,
-				this.treeWoodMetadata);
-
+		this.taperedCylinder(new int[] { x, starty, z }, new int[] { x, midy, z }, startrad, midrad, this.treeWoodBlock, this.treeWoodMetadata);
 		this.taperedCylinder(new int[] { x, midy, z }, new int[] { x, topy, z }, midrad, endrad, this.treeWoodBlock, this.treeWoodMetadata);
 
 		this.makeBranches();
@@ -483,35 +500,9 @@ public abstract class ProceduralTree extends Tree {
 			int[] z_choices = Forester.range(z - base_offset, z + base_offset, 1);
 			int start_z = Forester.choice(random, z_choices);
 
-			this.taperedCylinder(new int[] { start_x, starty, start_z },
-					new int[] { x, midy, z }, base_radius,
-					mid_radius, this.treeTrunkFillerBlock, this.treeTrunkFillerMetadata);
+			this.taperedCylinder(new int[] { start_x, starty, start_z }, new int[] { x, midy, z }, base_radius, mid_radius, this.treeTrunkFillerBlock, this.treeTrunkFillerMetadata);
 			int hollow_top_y = (int) (topy + trunkradius + 1.5);
-			this.taperedCylinder(new int[] { x, midy, z }, new int[] { x, hollow_top_y, z }, mid_radius, top_radius,
-					this.treeTrunkFillerBlock, this.treeTrunkFillerMetadata);
+			this.taperedCylinder(new int[] { x, midy, z }, new int[] { x, hollow_top_y, z }, mid_radius, top_radius, this.treeTrunkFillerBlock, this.treeTrunkFillerMetadata);
 		}
-	}
-	
-	/**
-	 * Experimental log x/z rotation
-	 * @param coord x y z array
-	 * @param start starting coord
-	 * @return rotation metadata
-	 */
-	private static int logRotation(int[] coord, int[] start) {
-		int dir = 0;
-		int xdiff = Math.abs(coord[0] - start[0]);
-		int zdiff = Math.abs(coord[2] - start[2]);
-		int maxdiff = Math.max(xdiff, zdiff);
-		
-		if(maxdiff > 0) {
-			if(xdiff == maxdiff) {
-				dir = LOG_ROT_X_METADATA;
-			} else {
-				dir = LOG_ROT_Z_METADATA;
-			}
-		}
-		
-		return dir;
 	}
 }

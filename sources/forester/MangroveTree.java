@@ -4,12 +4,12 @@ package forester;
  * This kind of tree is designed to resemble a mangrove tree.
  */
 public class MangroveTree extends RoundTree {
-	public MangroveTree(MCWorldAccessor mcmap) {
-		super(mcmap);
+	public MangroveTree() {
+		super();
 	}
 
 	@Override
-	public void prepare() {
+	protected void prepare() {
 		this.branchSlope = 1.0;
 		super.prepare();
 		this.trunkRadius = this.trunkRadius * 0.618;

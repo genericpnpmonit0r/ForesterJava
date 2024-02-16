@@ -1,7 +1,7 @@
 package forester;
 
 public class BambooTree extends StickTree {
-	public BambooTree(MCWorldAccessor mcmap) {
+	public BambooTree(MCLevel mcmap) {
 		this.mcmap = mcmap;
 	}
 
@@ -10,7 +10,7 @@ public class BambooTree extends StickTree {
 	 * Make foliage sparse and adjacent to the trunk.
 	 */
 	@Override
-	public void makeFoliage() {
+	protected void makeFoliage() {
 		int start = this.pos[1];
 		int end = this.pos[1] + this.height + 1;
 		
