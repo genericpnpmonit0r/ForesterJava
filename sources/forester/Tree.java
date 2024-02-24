@@ -263,6 +263,7 @@ public abstract class Tree {
 				return false;
 			} else {
 				this.height = allowedHeight;
+				System.out.println("set height to "+this.height);
 				return true;
 			}
 		}

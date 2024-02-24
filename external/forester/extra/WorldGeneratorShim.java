@@ -18,7 +18,7 @@ public class WorldGeneratorShim extends WorldGenerator {
 	}
 	
 	public WorldGeneratorShim(Tree tree, boolean update) {
-		super(update);
+		//super(update);
 		this.tree = tree;
 		this.tree.causeBlockUpdates = update;
 	}

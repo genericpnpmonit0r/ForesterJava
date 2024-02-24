@@ -331,16 +331,18 @@ public abstract class ProceduralTree extends Tree {
 
 		int ystart = treeposition[1];
 		int num_of_clusters_per_y = (int) (1.5 + Math.pow((this.treeFoliageDensity * this.height / 19.), 2));
-		ArrayList<int[]> foliage_coords = new ArrayList<>();
+		ArrayList<int[]> foliage_coords = new ArrayList<int[]>();
 		
 		if (num_of_clusters_per_y < 1) {
 			num_of_clusters_per_y = 1;
 		}
 
+		/*
 		if (yend > this.mcmap.getHeight())
 			yend = this.mcmap.getHeight();
 		if (ystart > this.mcmap.getHeight())
 			ystart = this.mcmap.getHeight();
+		*/
 		
 		for (int y = yend; y > ystart; y--) {
 			for (int i = 0; i < num_of_clusters_per_y; i++) {
@@ -436,7 +438,7 @@ public abstract class ProceduralTree extends Tree {
 			endrad = 1.0;
 		if (midrad < endrad)
 			midrad = endrad;
-		ArrayList<double[]> rootbases = new ArrayList<>();
+		ArrayList<double[]> rootbases = new ArrayList<double[]>();
 		double startrad;
 		int i;
 		
